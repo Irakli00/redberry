@@ -3,6 +3,10 @@
 
 @theme {
   --font-poppins: "Poppins", sans-serif;
+  --color-main-red: rgba(255, 64, 0, 1);
+  --color-dark-blue: rgba(62, 66, 74, 1);
+
+  --color-light-gray: rgba(225, 223, 225, 1);
 }
 
 @layer base {

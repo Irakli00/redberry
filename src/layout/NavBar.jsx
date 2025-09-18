@@ -1,5 +1,5 @@
-import HeaderLogo from "../assets/header-logo.svg";
-import UserIcon from "../assets/user.svg";
+import HeaderLogo from "../assets/icons/header-logo.svg";
+import UserIcon from "../assets/icons/user.svg";
 
 import { NavLink } from "react-router";
 
@@ -13,7 +13,7 @@ function Navbar() {
         </NavLink>
 
         <NavLink
-          to={"/logIn"}
+          to={"auth/logIn"}
           className="flex items-center gap-[4px] min-w-[64px]"
         >
           <img
