@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import AppLayout from "./layout/AppLayout";
 import Auth from "./pages/Auth";
 import LogInForm from "./elements/auth/LogInForm";
+import RegisterForm from "./elements/auth/RegisterForm";
 
 // notes:
 // X on successful purchase leads to items list page
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
         element: <Auth></Auth>,
         children: [
           { path: "logIn", element: <LogInForm></LogInForm> },
-          { path: "register", element: <h1>REGISTER</h1> },
+          { path: "register", element: <RegisterForm></RegisterForm> },
         ],
       },
     ],

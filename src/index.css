@@ -13,4 +13,8 @@
   body {
     @apply font-poppins;
   }
+
+  .auth-form-input {
+    @apply py-[10.5px] px-[12px] border border-light-gray rounded-[8px] placeholder:text-dark-blue focus:outline focus:outline-main-red;
+  } /* invalid:bg-red-500 */
 }
