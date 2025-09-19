@@ -1,11 +1,38 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 import CameraIcon from "../../assets/icons/camera.svg";
 
+import { register } from "../../services/auth";
+
 function RegisterForm() {
+  const [inputMail, setInPutMail] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
+  const [inputPasswordConfirm, setInputPasswordConfirm] = useState("");
+  const [inputUsername, setinputUsername] = useState("");
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: register,
+    onSuccess: (data) => {
+      console.log("we good:", data);
+    },
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    mutate({
+      email: inputMail,
+      username: inputUsername,
+      password: inputPassword,
+      avatar: null,
+      passwordConfirmation: inputPasswordConfirm,
+    });
+  }
+
   return (
     <div className="min-w-[554px] mt-[152px]">
-      <form className="flex flex-col gap-[48px] w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[48px] w-full">
         <h2 className="text-[42px] font-semibold">Registration</h2>
         <div className="flex items-center gap-4">
           <label
@@ -38,6 +65,7 @@ function RegisterForm() {
             placeholder="Username"
             required
             minLength={3}
+            onChange={(e) => setinputUsername(e.target.value)}
           />
           <input
             className="auth-form-input"
@@ -45,6 +73,7 @@ function RegisterForm() {
             placeholder="Email"
             required
             minLength={3}
+            onChange={(e) => setInPutMail(e.target.value)}
           />
           <input
             className="auth-form-input"
@@ -52,6 +81,7 @@ function RegisterForm() {
             placeholder="Password"
             required
             minLength={3}
+            onChange={(e) => setInputPassword(e.target.value)}
           />
           <input
             className="auth-form-input"
@@ -59,6 +89,7 @@ function RegisterForm() {
             placeholder="Confirm password"
             required
             minLength={3}
+            onChange={(e) => setInputPasswordConfirm(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-[24px]">
@@ -66,7 +97,8 @@ function RegisterForm() {
             className="bg-main-red text-white py-[10px] cursor-pointer rounded-[10px]"
             type="submit"
           >
-            Register
+            {isPending ? "Processing your data..." : "Register"}
+            {/* Register */}
           </button>
           <aside className="flex justify-center gap-[8px]">
             <p className="text-dark-blue cursor-default font-normal">
