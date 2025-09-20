@@ -1,12 +1,90 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import ReactPaginate from "react-paginate";
+
+import IconLeft from "../assets/icons/chevron-left.svg";
+import IconRight from "../assets/icons/chevron-right.svg";
+import IconDown from "../assets/icons/chevron-down.svg";
+import FilterIcon from "../assets/icons/filter-icon.svg";
+
+import getProducts from "../services/items";
+import ItemCard from "../elements/items/itemCard";
 
 function Items() {
   const [page, setPage] = useState(1);
 
-  const { data } = useQuery({ queryKey: ["items", page] });
+  const { data, isLoading, isSuccess } = useQuery({
+    queryKey: ["items", page],
+    queryFn: () => getProducts(page),
+  });
 
-  return <h1>ITEMS</h1>;
+  let from = 1,
+    lastPage = 100,
+    total;
+
+  if (isSuccess) {
+    ({ from, last_page: lastPage, total } = data.meta);
+  }
+
+  return (
+    <main className="m-auto max-w-[1720px] mt-[72px]">
+      <div className="flex justify-between mb-[32px]">
+        <h1 className="font-semibold text-[42px] text-dark-blue">Products</h1>
+        <div className="flex items-center gap-[32px]">
+          <p className="">
+            showing {from}-{lastPage} of {total} results
+          </p>
+          <div className="w-[1px] h-[14px] bg-light-gray"></div>
+          <button className="flex items-center gap-[8px] cursor-pointer">
+            <img src={FilterIcon} alt="filter" />
+            <span>Filter</span>
+          </button>
+          <button className="flex items-center gap-[8px] cursor-pointer">
+            <span>Sort by</span>
+            <img src={IconDown} alt="sort" />
+          </button>
+        </div>
+      </div>
+
+      <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
+        {isLoading && <h1>Loading...</h1>}
+        {isSuccess &&
+          data.data.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
+      </section>
+
+      <aside className="flex justify-center mt-[90px] mb-[200px]">
+        <ReactPaginate
+          previousLabel={
+            <img
+              className="cursor-pointer"
+              src={IconLeft}
+              alt="previous page"
+            ></img>
+          }
+          nextLabel={
+            <img
+              className="cursor-pointer"
+              src={IconRight}
+              alt="next page"
+            ></img>
+          }
+          breakLabel={
+            <span className="cursor-pointer flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
+              ...
+            </span>
+          }
+          pageCount={lastPage}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          // onPageChange={(e) => onPageChange(e.selected + 1)}
+          containerClassName="flex items-center gap-[8px]"
+          pageClassName="border border-light-gray text-dark-gray/60 rounded-[4px]"
+          pageLinkClassName="w-[32px] h-[32px] cursor-pointer flex items-center justify-center"
+          activeClassName="border border-main-red text-main-red"
+        />
+      </aside>
+    </main>
+  );
 }
 
 export default Items;
