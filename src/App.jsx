@@ -1,12 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 
 import AppLayout from "./layout/AppLayout";
 import Auth from "./pages/Auth";
 import LogInForm from "./elements/auth/LogInForm";
 import RegisterForm from "./elements/auth/RegisterForm";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Items from "./pages/Items";
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
 
 // notes:
 // X on successful purchase leads to items list page
@@ -15,7 +16,7 @@ import Items from "./pages/Items";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 9999 * 9999,
+      staleTime: 3 * 60000,
       // staleTime: 10,
     },
   },
@@ -26,7 +27,9 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout></AppLayout>,
     children: [
-      { index: true, element: <Items></Items> },
+      { index: true, element: <Navigate to="/products" replace /> },
+      { path: "products", element: <Products></Products> },
+      { path: "/products/:id", element: <ProductDetails></ProductDetails> },
       {
         path: "auth",
         element: <Auth></Auth>,

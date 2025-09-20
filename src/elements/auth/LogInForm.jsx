@@ -26,7 +26,7 @@ function LogInForm() {
   return (
     <div className="min-w-[554px] mt-[241px]">
       <form onSubmit={handleSubmit} className="flex flex-col gap-[48px] w-full">
-        <h2 className="text-[42px] font-semibold">Log in</h2>
+        <h2 className="text-[42px] text-main-black font-semibold">Log in</h2>
         <div className="flex flex-col gap-[24px]">
           <input
             className="auth-form-input"

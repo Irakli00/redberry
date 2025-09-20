@@ -43,7 +43,9 @@ function RegisterForm() {
   return (
     <div className="min-w-[554px] mt-[152px]">
       <form onSubmit={handleSubmit} className="flex flex-col gap-[48px] w-full">
-        <h2 className="text-[42px] font-semibold">Registration</h2>
+        <h2 className="text-[42px] text-main-black font-semibold">
+          Registration
+        </h2>
         <div className="flex items-center gap-4">
           <label
             htmlFor="avatarInput"

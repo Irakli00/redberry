@@ -7,9 +7,11 @@ function Navbar() {
   return (
     <header>
       <div className="flex items-center justify-between py-[28px] m-auto max-w-[1720px]">
-        <NavLink to={"/"} className="flex gap-[4px]">
+        <NavLink to={"/products"} className="flex gap-[4px]">
           <img src={HeaderLogo} alt="RedSeam Clothing logo" />
-          <span className="font-semibold ">RedSeam Clothing</span>
+          <span className="font-semibold text-main-black">
+            RedSeam Clothing
+          </span>
         </NavLink>
 
         <NavLink

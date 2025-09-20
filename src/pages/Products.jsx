@@ -7,14 +7,14 @@ import IconRight from "../assets/icons/chevron-right.svg";
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
 
-import getProducts from "../services/items";
-import ItemCard from "../elements/items/itemCard";
+import { getProducts } from "../services/products";
+import ItemCard from "../elements/products/ProductCard";
 
-function Items() {
+function Products() {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isSuccess } = useQuery({
-    queryKey: ["items", page],
+    queryKey: ["products", page],
     queryFn: () => getProducts(page),
   });
 
@@ -26,10 +26,12 @@ function Items() {
     ({ from, last_page: lastPage, total } = data.meta);
   }
 
+  if (isLoading) return <h1>Loading...</h1>; //spinner latter
+
   return (
     <main className="m-auto max-w-[1720px] mt-[72px]">
       <div className="flex justify-between mb-[32px]">
-        <h1 className="font-semibold text-[42px] text-dark-blue">Products</h1>
+        <h1 className="font-semibold text-[42px] text-main-black">Products</h1>
         <div className="flex items-center gap-[32px]">
           <p className="">
             showing {from}-{lastPage} of {total} results
@@ -47,7 +49,6 @@ function Items() {
       </div>
 
       <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
-        {isLoading && <h1>Loading...</h1>}
         {isSuccess &&
           data.data.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
       </section>
@@ -87,4 +88,4 @@ function Items() {
   );
 }
 
-export default Items;
+export default Products;

@@ -1,9 +1,9 @@
 import { Link } from "react-router";
 
-function ItemCard({ item }) {
+function ProductCard({ item }) {
   return (
     <Link
-      to={`/item/${item.id}`}
+      to={`/products/${item.id}`}
       className="flex flex-col cursor-pointer max-h-[612px] max-w-[412px]"
     >
       <img
@@ -17,4 +17,4 @@ function ItemCard({ item }) {
   );
 }
 
-export default ItemCard;
+export default ProductCard;
