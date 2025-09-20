@@ -6,6 +6,7 @@ import Auth from "./pages/Auth";
 import LogInForm from "./elements/auth/LogInForm";
 import RegisterForm from "./elements/auth/RegisterForm";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Items from "./pages/Items";
 
 // notes:
 // X on successful purchase leads to items list page
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout></AppLayout>,
     children: [
-      { index: true, element: <h1>ITEMS LIST</h1> }, //so far
+      { index: true, element: <Items></Items> },
       {
         path: "auth",
         element: <Auth></Auth>,

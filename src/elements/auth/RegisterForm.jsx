@@ -1,33 +1,43 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import CameraIcon from "../../assets/icons/camera.svg";
 
 import { register } from "../../services/auth";
 
 function RegisterForm() {
+  const navigate = useNavigate();
+
   const [inputMail, setInPutMail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState("");
   const [inputUsername, setinputUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   const { mutate, isPending } = useMutation({
     mutationFn: register,
     onSuccess: (data) => {
       console.log("we good:", data);
+      localStorage.setItem("token", data.token);
+      navigate("/");
     },
   });
 
   function handleSubmit(e) {
     e.preventDefault();
-    mutate({
-      email: inputMail,
-      username: inputUsername,
-      password: inputPassword,
-      avatar: null,
-      passwordConfirmation: inputPasswordConfirm,
-    });
+
+    const formData = new FormData();
+    formData.append("email", inputMail);
+    formData.append("username", inputUsername);
+    formData.append("password", inputPassword);
+    formData.append("password_confirmation", inputPasswordConfirm);
+
+    if (avatar) {
+      formData.append("avatar", avatar);
+    }
+
+    mutate(formData);
   }
 
   return (
@@ -41,9 +51,9 @@ function RegisterForm() {
           >
             <div className="w-[100px] h-[100px] rounded-full border border-light-gray flex items-center justify-center overflow-hidden">
               <img
-                src={CameraIcon}
+                src={avatar ? URL.createObjectURL(avatar) : CameraIcon}
                 alt="preview"
-                className="object-cover w-[20px] h-[20px]"
+                className="object-cover "
               />
             </div>
             <span>Upload Image</span>
@@ -55,6 +65,7 @@ function RegisterForm() {
             id="avatarInput"
             accept="image/*"
             className="hidden"
+            onChange={(e) => setAvatar(e.target.files[0])}
           />
         </div>
 

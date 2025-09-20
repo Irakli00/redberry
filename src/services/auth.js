@@ -19,38 +19,17 @@ async function logIn({ email, password }) {
   return res.json();
 }
 
-async function register({
-  email,
-  username,
-  avatar,
-  password,
-  passwordConfirmation,
-}) {
+async function register(data) {
   const res = await fetch(
     "https://api.redseam.redberryinternship.ge/api/register",
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         accept: "application/json",
       },
-      body: JSON.stringify({
-        email,
-        username,
-        avatar,
-        password,
-        password_confirmation: passwordConfirmation,
-      }),
+      body: data,
     }
-  );
-
-  console.log(
-    email,
-    username,
-    avatar,
-    password,
-    passwordConfirmation,
-    password === password
   );
 
   if (!res.ok) throw new Error("couldn't log in");
