@@ -37,7 +37,7 @@ function ProductDetails() {
 
   if (isLoading) return <h1>ITS A SPINNER</h1>;
   return (
-    <main className="m-auto max-w-[1720px] mt-[30px] mb-[140px]">
+    <main className="m-auto max-w-[1720px] mt-[30px]">
       <aside className="flex">
         <Link to={"/products"}>Listing</Link>
         <p>/</p>
@@ -66,7 +66,7 @@ function ProductDetails() {
           </div>
         </div>
 
-        <article className="flex flex-col gap-[56px]">
+        <article className="flex flex-col gap-[56px] overflow-hidden">
           <div className="flex flex-col gap-[21px]">
             <h1 className="text-main-black text-[32px] font-semibold">
               {data.name}

@@ -6,7 +6,7 @@ const AppContext = createContext();
 
 function AppProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [cartModalOpen, setCartModalOpen] = useState(true);
+  const [cartModalOpen, setCartModalOpen] = useState(false);
 
   const { data: cart = [], isLoading: cartLoading } = useQuery({
     queryKey: ["cart", user?.id],
