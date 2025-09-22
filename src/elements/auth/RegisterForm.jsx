@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
 
 import CameraIcon from "../../assets/icons/camera.svg";
 
 import { register } from "../../services/auth";
+import { AppContext } from "../../context/AppContext";
 
 function RegisterForm() {
+  const { loginUser } = useContext(AppContext);
   const navigate = useNavigate();
 
   const [inputMail, setInPutMail] = useState("");
@@ -18,9 +20,8 @@ function RegisterForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: register,
     onSuccess: (data) => {
-      console.log("we good:", data);
-      localStorage.setItem("token", data.token);
-      navigate("/");
+      loginUser(data.user, data.token);
+      navigate("/products");
     },
   });
 

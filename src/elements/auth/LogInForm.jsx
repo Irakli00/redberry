@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { logIn } from "../../services/auth";
 import { useMutation } from "@tanstack/react-query";
+import { AppContext } from "../../context/AppContext";
 
 function LogInForm() {
+  const { loginUser } = useContext(AppContext);
+
   const navigate = useNavigate();
 
   const [inputMail, setInPutMail] = useState("");
@@ -12,9 +15,8 @@ function LogInForm() {
   const { mutate, isPending } = useMutation({
     mutationFn: logIn,
     onSuccess: (data) => {
-      console.log("we good:", data);
-      localStorage.setItem("token", data.token);
-      navigate("/");
+      loginUser(data.user, data.token);
+      navigate("/products");
     },
   });
 
