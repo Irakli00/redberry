@@ -70,10 +70,11 @@ function Products() {
             ></img>
           }
           breakLabel={
-            <span className="cursor-pointer flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
+            <span className="flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
               ...
             </span>
           }
+          breakLinkClassName="pointer-events-none cursor-default"
           pageCount={lastPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}

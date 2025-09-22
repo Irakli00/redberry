@@ -8,6 +8,7 @@ import RegisterForm from "./elements/auth/RegisterForm";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
+import { AppProvider } from "./context/AppContext.jsx";
 
 // notes:
 // X on successful purchase leads to items list page
@@ -45,7 +46,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>
+      <AppProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </AppProvider>
       <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
     </QueryClientProvider>
   );

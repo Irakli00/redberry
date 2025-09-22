@@ -6,7 +6,7 @@ function ProductDetails() {
   const colorMap = {
     White: "#FFFFFF",
     Red: "#FF0000",
-    Multi: "linear-gradient(90deg, red, yellow, green, blue)",
+    Multi: "linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #0000ff)",
     Blue: "#0000FF",
     "Navy Blue": "#001F54",
     Grey: "#808080",
@@ -82,7 +82,7 @@ function ProductDetails() {
               {data.available_colors.map((color) => (
                 <li
                   key={color}
-                  style={{ backgroundColor: colorMap[color] }}
+                  style={{ background: colorMap[color] }}
                   className="h-[38px] w-[38px] rounded-full border border-dark-gray"
                 ></li>
               ))}
@@ -104,8 +104,7 @@ function ProductDetails() {
           </div>
 
           <div>
-            {!data.quantity && <p>SOLD OUT</p>}{" "}
-            {/* gottta ask about this one */}
+            {!data.quantity && <p>SOLD OUT</p>}
             {data.quantity && (
               <>
                 <p className="mb-[16px]">Quantity:</p>
