@@ -3,6 +3,31 @@ import { Link, useParams } from "react-router";
 import { getProduct } from "../services/products";
 
 function ProductDetails() {
+  const colorMap = {
+    White: "#FFFFFF",
+    Red: "#FF0000",
+    Multi: "linear-gradient(90deg, red, yellow, green, blue)",
+    Blue: "#0000FF",
+    "Navy Blue": "#001F54",
+    Grey: "#808080",
+    Black: "#000000",
+    Purple: "#800080",
+    Orange: "#FFA500",
+    Beige: "#F5F5DC",
+    Pink: "#FFC0CB",
+    Green: "#008000",
+    Cream: "#FFFDD0",
+    Maroon: "#800000",
+    Brown: "#A52A2A",
+    Peach: "#FFE5B4",
+    "Off White": "#F8F8F0",
+    Mauve: "#E0B0FF",
+    Yellow: "#FFFF00",
+    Magenta: "#FF00FF",
+    Khaki: "#F0E68C",
+    Olive: "#808000",
+  };
+
   const { id: productId } = useParams();
 
   const { data, isLoading } = useQuery({
@@ -12,7 +37,7 @@ function ProductDetails() {
 
   if (isLoading) return <h1>ITS A SPINNER</h1>;
   return (
-    <main className="m-auto max-w-[1720px] mt-[30px]">
+    <main className="m-auto max-w-[1720px] mt-[30px] mb-[140px]">
       <aside className="flex">
         <Link to={"/products"}>Listing</Link>
         <p>/</p>
@@ -22,8 +47,13 @@ function ProductDetails() {
       <section className="flex gap-11">
         <div className="flex">
           <div>
-            {data.images.map((img) => (
-              <img className="max-w-[121px]" src={img} alt={data.name}></img>
+            {data.images.map((img, i) => (
+              <img
+                key={i}
+                className="max-w-[121px]"
+                src={img}
+                alt={data.name}
+              ></img>
             ))}
           </div>
 
@@ -47,19 +77,28 @@ function ProductDetails() {
           </div>
 
           <div>
-            <p>Color: {data.color}</p>
-            <ul>
+            <p className="mb-[16px]">Color: {data.color}</p>
+            <ul className="flex items-center gap-[13px]">
               {data.available_colors.map((color) => (
-                <li style={{ backgroundColor: color }}>{color}</li>
+                <li
+                  key={color}
+                  style={{ backgroundColor: colorMap[color] }}
+                  className="h-[38px] w-[38px] rounded-full border border-dark-gray"
+                ></li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p>Size: {data.size}</p>
-            <ul>
+            <p className="mb-[16px]">Size: {data.size}</p>
+            <ul className="flex gap-[8px] ">
               {data.available_sizes.map((size) => (
-                <li>{size}</li>
+                <li
+                  className="border border-light-gray rounded-[10px] py-[9px] px-[25px]"
+                  key={size}
+                >
+                  {size}
+                </li>
               ))}
             </ul>
           </div>
@@ -68,19 +107,26 @@ function ProductDetails() {
             {!data.quantity && <p>SOLD OUT</p>}{" "}
             {/* gottta ask about this one */}
             {data.quantity && (
-              <select name="quantity" id="quantity">
-                {Array.from({
-                  length: data.quantity <= 10 ? data.quantity : 10,
-                }).map((_, i) => (
-                  <option key={i} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
+              <>
+                <p className="mb-[16px]">Quantity:</p>
+                <select
+                  className="border border-light-gray rounded-[10px] py-[9px] px-[16px]"
+                  name="quantity"
+                  id="quantity"
+                >
+                  {Array.from({
+                    length: data.quantity <= 10 ? data.quantity : 10,
+                  }).map((_, i) => (
+                    <option key={i} value={i + 1}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+              </>
             )}
           </div>
 
-          <button className="bg-main-red">
+          <button className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]">
             <svg
               width="25"
               height="25"
@@ -97,17 +143,21 @@ function ProductDetails() {
               />
             </svg>
 
-            <span>Add to cart</span>
+            <span className="text-white">Add to cart</span>
           </button>
 
-          <div>
-            <p>im just a line</p>
-          </div>
+          <div className="h-[1px] bg-light-gray"></div>
 
           <aside>
-            <h3>Details</h3>
-            <img src={data.brand.image} alt={data.brand.name} />
-            <p>Brand:{data.brand.name}</p>
+            <div className="flex items-center justify-between max-h-[60px]">
+              <h3 className="text-[20px] font-medium">Details</h3>
+              <img
+                className="max-w-[80px]"
+                src={data.brand.image}
+                alt={data.brand.name}
+              />
+            </div>
+            <p className="mb-[20px]">Brand: {data.brand.name}</p>
 
             <p>{data.description}</p>
           </aside>
