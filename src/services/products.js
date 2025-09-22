@@ -1,7 +1,12 @@
-// async function getProducts(page, sort, priceFrom, priceTo) {
-async function getProducts() {
+async function getProducts(page, priceFrom, priceTo) {
+  const params = new URLSearchParams();
+  params.append("page", page);
+
+  if (priceFrom) params.append("filter[price_from]", priceFrom);
+  if (priceTo) params.append("filter[price_to]", priceTo);
+
   const res = await fetch(
-    "https://api.redseam.redberryinternship.ge/api/products",
+    `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
     {
       method: "GET",
       headers: {
@@ -10,7 +15,9 @@ async function getProducts() {
     }
   );
 
-  if (!res.ok) throw new Error("couldn't get items");
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
 
   return res.json();
 }

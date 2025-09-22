@@ -6,6 +6,7 @@ const AppContext = createContext();
 
 function AppProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [page, setPage] = useState(1);
   const [cartModalOpen, setCartModalOpen] = useState(false);
 
   const { data: cart = [], isLoading: cartLoading } = useQuery({
@@ -37,6 +38,8 @@ function AppProvider({ children }) {
         setCartModalOpen,
         cart,
         cartLoading,
+        page,
+        setPage,
       }}
     >
       {children}

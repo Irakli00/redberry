@@ -45,7 +45,7 @@ function ProductDetails() {
       </aside>
 
       <section className="flex gap-11">
-        <div className="flex">
+        <div className="flex gap-[24px]">
           <div>
             {data.images.map((img, i) => (
               <img
@@ -91,16 +91,18 @@ function ProductDetails() {
 
           <div>
             <p className="mb-[16px]">Size: {data.size}</p>
-            <ul className="flex gap-[8px] ">
-              {data.available_sizes.map((size) => (
-                <li
-                  className="border border-light-gray rounded-[10px] py-[9px] px-[25px]"
-                  key={size}
-                >
-                  {size}
-                </li>
-              ))}
-            </ul>
+            {data.available_sizes && (
+              <ul className="flex gap-[8px] ">
+                {data.available_sizes.map((size) => (
+                  <li
+                    className="border border-light-gray rounded-[10px] py-[9px] px-[25px]"
+                    key={size}
+                  >
+                    {size}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div>
