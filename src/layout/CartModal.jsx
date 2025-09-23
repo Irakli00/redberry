@@ -45,7 +45,7 @@ function CartModal() {
             <>
               <Cart></Cart>
               <Link
-                className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium mt-[100px] p-[16px] rounded-[10px]"
+                className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium p-[16px] rounded-[10px]"
                 to={"/products"}
                 onClick={() => setCartModalOpen(false)}
               >

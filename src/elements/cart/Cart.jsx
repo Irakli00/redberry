@@ -1,13 +1,35 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
-import { removeFromCart } from "../../services/cart";
-import EmptyCart from "./EmptyCart";
+import { removeFromCart, updateCartItem } from "../../services/cart";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Cart() {
-  const { cart } = useContext(AppContext);
+  const { cart, user } = useContext(AppContext);
+  const qClient = useQueryClient();
+
+  const cartMap = {};
+  cart.forEach((el) => (cartMap[el.id] = el.quantity));
+  const [quantities, setQuantities] = useState(cartMap);
+
   const totalPrice = cart
-    .map((el) => el.price)
-    .reduce((acc, curr) => acc + curr, 0);
+    .map((el) => {
+      return { price: el.price, quantity: el.quantity };
+    })
+    .reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+
+  const { mutate: removeMutate } = useMutation({
+    mutationFn: removeFromCart,
+    onSettled: () => {
+      qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
+    },
+  });
+
+  const { mutate: updateMutate } = useMutation({
+    mutationFn: updateCartItem,
+    onSettled: () => {
+      qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
+    },
+  });
 
   return (
     <>
@@ -22,19 +44,48 @@ function Cart() {
             <div className="flex flex-col flex-1 gap-[8px]">
               <div className="flex justify-between">
                 <h4 className="text-[14px] font-medium">{el.name}</h4>
-                <p className="text-[18px]">$ {el.price}</p>
+                <p className="text-[18px]">$ {el.price * el.quantity}</p>
               </div>
               <p className="text-dark-blue">{el.color}</p>
               <p>{el.size}</p>
               <div className="flex justify-between">
-                <div className="max-w-[70px] flex justify-around items-center gap-[9px] border border-light-gray rounded-[22px] px-[11px] py-[6px]">
-                  <button disabled={el.quantity <= 1}>-</button>
-                  <p>{el.quantity}</p>
-                  <button>+</button>
+                <div className=" flex justify-around items-center gap-[9px] border border-light-gray rounded-[22px] px-[11px] py-[6px]">
+                  <button
+                    className="cursor-pointer px-1"
+                    onClick={() => {
+                      console.log(quantities, quantities[el.id], el.quantity);
+                      updateMutate({
+                        item: el,
+                        quantity: quantities[el.id] ?? el.quantity,
+                      });
+                      setQuantities((p) => {
+                        return { ...p, [el.id]: (p[el.id] ?? el.quantity) - 1 };
+                      });
+                    }}
+                    disabled={(quantities[el.id] ?? el.quantity) <= 1}
+                  >
+                    -
+                  </button>
+                  <p>{quantities[el.id] ?? el.quantity}</p>
+                  <button
+                    className="cursor-pointer px-1"
+                    onClick={() => {
+                      console.log(quantities, quantities[el.id], el.quantity);
+                      updateMutate({
+                        item: el,
+                        quantity: quantities[el.id] ?? el.quantity,
+                      });
+                      setQuantities((p) => {
+                        return { ...p, [el.id]: (p[el.id] ?? el.quantity) + 1 };
+                      });
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
                 <button
                   className="cursor-pointer font-normal text-dark-blue"
-                  onClick={() => removeFromCart(el.id)}
+                  onClick={() => removeMutate(el.id)}
                 >
                   Remove
                 </button>

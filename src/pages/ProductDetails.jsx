@@ -1,10 +1,12 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { getProduct } from "../services/products";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { addToCart } from "../services/cart";
+import { AppContext } from "../context/AppContext";
 
 function ProductDetails() {
+  const { user, cart } = useContext(AppContext);
   const colorMap = {
     White: "#FFFFFF",
     Red: "#FF0000",
@@ -42,19 +44,25 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState(data?.size);
   const [quantity, setQuantity] = useState(1);
 
+  const {
+    mutate: addToCartMutation,
+    // isPending: isBeingAdded,
+    // isSuccess: isAddedSuccesfuly,
+  } = useMutation({
+    mutationFn: addToCart,
+    onSuccess: () => {
+      qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
+    },
+  });
+
   function handleSubmit(e) {
     e.preventDefault();
 
-    const item = {
+    addToCartMutation({
       product: productId,
       color: selectedColor,
       size: selectedSize,
       quantity,
-    };
-
-    addToCart(item);
-    qClient.invalidateQueries({
-      queryKey: [["cart", localStorage.getItem("user")?.id]],
     });
   }
 
@@ -68,13 +76,13 @@ function ProductDetails() {
         <Link to={"#"}>Product</Link>
       </aside>
 
-      <section className="flex gap-11">
+      <section className="flex gap-11 mt-[50px]">
         <div className="flex gap-[24px]">
-          <div>
+          <div className="flex gap-[9px] flex-col">
             {data.images.map((img, i) => (
               <img
                 key={i}
-                className="max-w-[121px]"
+                className="max-w-[121px] rounded-[6px] border-2 border-main-red cursor-pointer"
                 src={img}
                 alt={data.name}
               ></img>
@@ -170,24 +178,35 @@ function ProductDetails() {
               )}
             </div>
 
-            <button className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]">
-              <svg
-                width="25"
-                height="25"
-                viewBox="0 0 24 25"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.25 3.5H3.63568C4.14537 3.5 4.59138 3.84265 4.7227 4.33513L5.1059 5.77209M7.5 14.75C5.84315 14.75 4.5 16.0931 4.5 17.75H20.25M7.5 14.75H18.7183C19.8394 12.4494 20.8177 10.0664 21.6417 7.6125C16.88 6.39646 11.8905 5.75 6.75 5.75C6.20021 5.75 5.65214 5.7574 5.1059 5.77209M7.5 14.75L5.1059 5.77209M6 20.75C6 21.1642 5.66421 21.5 5.25 21.5C4.83579 21.5 4.5 21.1642 4.5 20.75C4.5 20.3358 4.83579 20 5.25 20C5.66421 20 6 20.3358 6 20.75ZM18.75 20.75C18.75 21.1642 18.4142 21.5 18 21.5C17.5858 21.5 17.25 21.1642 17.25 20.75C17.25 20.3358 17.5858 20 18 20C18.4142 20 18.75 20.3358 18.75 20.75Z"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <button
+              disabled={cart.filter((item) => data.id === item.id).length}
+              className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]"
+            >
+              {cart.filter((item) => data.id === item.id).length ? (
+                <span className="text-white">
+                  Item is in added to your cart
+                </span> //some icon here
+              ) : (
+                <>
+                  <svg
+                    width="25"
+                    height="25"
+                    viewBox="0 0 24 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2.25 3.5H3.63568C4.14537 3.5 4.59138 3.84265 4.7227 4.33513L5.1059 5.77209M7.5 14.75C5.84315 14.75 4.5 16.0931 4.5 17.75H20.25M7.5 14.75H18.7183C19.8394 12.4494 20.8177 10.0664 21.6417 7.6125C16.88 6.39646 11.8905 5.75 6.75 5.75C6.20021 5.75 5.65214 5.7574 5.1059 5.77209M7.5 14.75L5.1059 5.77209M6 20.75C6 21.1642 5.66421 21.5 5.25 21.5C4.83579 21.5 4.5 21.1642 4.5 20.75C4.5 20.3358 4.83579 20 5.25 20C5.66421 20 6 20.3358 6 20.75ZM18.75 20.75C18.75 21.1642 18.4142 21.5 18 21.5C17.5858 21.5 17.25 21.1642 17.25 20.75C17.25 20.3358 17.5858 20 18 20C18.4142 20 18.75 20.3358 18.75 20.75Z"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
 
-              <span className="text-white">Add to cart</span>
+                  <span className="text-white">Add to cart</span>
+                </>
+              )}
             </button>
           </form>
 

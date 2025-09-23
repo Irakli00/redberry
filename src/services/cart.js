@@ -7,7 +7,7 @@ async function getCart() {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
-        Authorization: `Bearer ${token.slice(1, -1)}`,
+        Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
       },
     }
   );
@@ -26,7 +26,7 @@ async function addToCart(item) {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
-        Authorization: `Bearer ${token.slice(1, -1)}`,
+        Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
       },
       body: JSON.stringify({
         quantity: item.quantity,
@@ -41,8 +41,42 @@ async function addToCart(item) {
   return res.json();
 }
 
+async function updateCartItem({ item, quantity }) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(
+    `https://api.redseam.redberryinternship.ge/api/cart/products/${item.id}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
+      },
+      body: JSON.stringify({
+        quantity,
+        color: item.color,
+        size: item.size,
+      }),
+    }
+  );
+  console.log(
+    quantity,
+    {
+      quantity,
+      color: item.color,
+      size: item.size,
+    },
+    res.json()
+  );
+
+  if (!res.ok) throw new Error("couldn't add to a cart");
+
+  return res.json();
+}
+
 async function removeFromCart(itemId) {
   const token = localStorage.getItem("token");
+
   const res = await fetch(
     `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
     {
@@ -50,7 +84,7 @@ async function removeFromCart(itemId) {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
-        Authorization: `Bearer ${token.slice(1, -1)}`,
+        Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
       },
     }
   );
@@ -60,4 +94,4 @@ async function removeFromCart(itemId) {
   return res.json();
 }
 
-export { getCart, addToCart, removeFromCart };
+export { getCart, addToCart, updateCartItem, removeFromCart };
