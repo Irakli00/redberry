@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { getProduct } from "../services/products";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { addToCart } from "../services/cart";
 import { AppContext } from "../context/AppContext";
 
@@ -43,6 +43,7 @@ function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(data?.color);
   const [selectedSize, setSelectedSize] = useState(data?.size);
   const [quantity, setQuantity] = useState(1);
+  const [mainPhoto, setMainPhoto] = useState(null);
 
   const {
     mutate: addToCartMutation,
@@ -66,11 +67,19 @@ function ProductDetails() {
     });
   }
 
+  useEffect(() => {
+    if (data) {
+      setSelectedColor(data.color);
+      setSelectedSize(data.size);
+      setMainPhoto(data.cover_image);
+    }
+  }, [data]);
+
   if (isLoading) return <h1>ITS A SPINNER</h1>;
 
   return (
     <main className="m-auto max-w-[1720px] mt-[30px]">
-      <aside className="flex">
+      <aside className="flex text-[14px] font-light">
         <Link to={"/products"}>Listing</Link>
         <p>/</p>
         <Link to={"#"}>Product</Link>
@@ -82,8 +91,12 @@ function ProductDetails() {
             {data.images.map((img, i) => (
               <img
                 key={i}
-                className="max-w-[121px] rounded-[6px] border-2 border-main-red cursor-pointer"
+                className="max-w-[121px] cursor-pointer rounded-[6px] border-1 border-light-gray"
+                style={{
+                  borderColor: img === mainPhoto && "rgba(255, 64, 0, 1)",
+                }}
                 src={img}
+                onClick={() => setMainPhoto(img)}
                 alt={data.name}
               ></img>
             ))}
@@ -92,7 +105,7 @@ function ProductDetails() {
           <div>
             <img
               className="max-w-[700px]"
-              src={data.cover_image}
+              src={mainPhoto ?? data.cover_image}
               alt={data.name}
             />
           </div>
@@ -111,9 +124,9 @@ function ProductDetails() {
           <form className="flex flex-col gap-[48px]" onSubmit={handleSubmit}>
             <div>
               <p className="mb-[16px]">
-                {data.color === "Default"
+                {selectedColor === "Default"
                   ? "Choose a color"
-                  : `Color: ${data.color}`}
+                  : `Color: ${selectedColor ?? data.color}`}
               </p>
               <ul className="flex items-center gap-[23px] pl-[6px] ">
                 {data.available_colors.map((color) => (
@@ -183,9 +196,7 @@ function ProductDetails() {
               className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]"
             >
               {cart.filter((item) => data.id === item.id).length ? (
-                <span className="text-white">
-                  Item is in added to your cart
-                </span> //some icon here
+                <span className="text-white">Item is added to your cart</span> //some icon here
               ) : (
                 <>
                   <svg

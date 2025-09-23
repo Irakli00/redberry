@@ -79,6 +79,7 @@ function Products() {
                     setFilterOpen(false);
                   }}
                   className="cursor-pointer bg-main-red mt-[10px] self-end py-[10px] px-[42px] text-white rounded-[10px]"
+                  disabled={!priceFrom && !priceTo}
                 >
                   Apply
                 </button>

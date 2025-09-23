@@ -19,4 +19,11 @@
   .auth-form-input {
     @apply py-[10.5px] px-[12px] border border-light-gray rounded-[8px] placeholder:text-dark-blue focus:outline focus:outline-main-red;
   } /* invalid:bg-red-500 */
+
+  button {
+    @apply transition-opacity duration-[0.2s] ease-in;
+  }
+  button:disabled {
+    @apply opacity-70 cursor-default!;
+  }
 }
