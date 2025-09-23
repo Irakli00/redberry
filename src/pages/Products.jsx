@@ -43,7 +43,7 @@ function Products() {
             results
           </p>
           <div className="w-[1px] h-[14px] bg-light-gray"></div>
-          <div className="relative">
+          <div className="relative ">
             <button
               className="flex items-center gap-[8px] cursor-pointer "
               onClick={() => setFilterOpen((p) => !p)}

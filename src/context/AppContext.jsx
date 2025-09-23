@@ -11,7 +11,7 @@ function AppProvider({ children }) {
 
   const { data: cart = [], isLoading: cartLoading } = useQuery({
     queryKey: ["cart", user?.id],
-    queryFn: () => getCart(localStorage.getItem("token")),
+    queryFn: () => getCart(),
     enabled: !!user,
     staleTime: 5 * 60 * 1000, // 5min
   });

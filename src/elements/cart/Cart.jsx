@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import { removeFromCart } from "../../services/cart";
+import EmptyCart from "./EmptyCart";
 
 function Cart() {
   const { cart } = useContext(AppContext);
@@ -9,7 +11,7 @@ function Cart() {
 
   return (
     <>
-      <ul className="flex-1 overflow-y-auto">
+      <ul className="flex-1 max-h-[500px] overflow-y-scroll ">
         {cart.map((el) => (
           <li key={el.id} className="flex gap-[17px] mb-4">
             <img
@@ -30,7 +32,10 @@ function Cart() {
                   <p>{el.quantity}</p>
                   <button>+</button>
                 </div>
-                <button className="cursor-pointer font-normal text-dark-blue">
+                <button
+                  className="cursor-pointer font-normal text-dark-blue"
+                  onClick={() => removeFromCart(el.id)}
+                >
                   Remove
                 </button>
               </div>
