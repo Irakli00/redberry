@@ -1,4 +1,8 @@
 async function logIn({ email, password }) {
+  const statusMap = {
+    401: "User not found check Email or Password inputs",
+  };
+
   const res = await fetch(
     "https://api.redseam.redberryinternship.ge/api/login",
     {
@@ -14,7 +18,7 @@ async function logIn({ email, password }) {
     }
   );
 
-  if (!res.ok) throw new Error("couldn't log in");
+  if (!res.ok) throw new Error(statusMap[res.status]);
 
   return res.json();
 }
@@ -32,7 +36,18 @@ async function register(data) {
     }
   );
 
-  if (!res.ok) throw new Error("couldn't log in");
+  // if (!res.ok)
+  //   return res.json().then((errors) => Object.values(errors.errors).flat());
+
+  if (!res.ok) {
+    const errors = await res.json();
+
+    const errMessages = Object.values(errors.errors).flat();
+    const error = new Error(errors.message);
+    error.messages = errMessages;
+
+    throw error;
+  }
 
   return res.json();
 }

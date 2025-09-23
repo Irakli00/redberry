@@ -1,7 +1,9 @@
+import { useMutation } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
+
+import EyeIcon from "../../assets/icons/eye.svg";
 import { logIn } from "../../services/auth";
-import { useMutation } from "@tanstack/react-query";
 import { AppContext } from "../../context/AppContext";
 
 function LogInForm() {
@@ -11,13 +13,16 @@ function LogInForm() {
 
   const [inputMail, setInPutMail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("Something went wrong!");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: logIn,
     onSuccess: (data) => {
       loginUser(data.user, data.token);
       navigate("/products");
     },
+    onError: (err) => setErrorMessage(err.message),
   });
 
   function handleSubmit(e) {
@@ -29,7 +34,7 @@ function LogInForm() {
     <div className="min-w-[554px] mt-[241px]">
       <form onSubmit={handleSubmit} className="flex flex-col gap-[48px] w-full">
         <h2 className="text-[42px] text-main-black font-semibold">Log in</h2>
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col gap-[24px] relative">
           <input
             className="auth-form-input"
             type="email"
@@ -38,14 +43,28 @@ function LogInForm() {
             minLength={3}
             onChange={(e) => setInPutMail(e.target.value)}
           />
-          <input
-            className="auth-form-input"
-            type="password"
-            placeholder="Password"
-            required
-            minLength={3}
-            onChange={(e) => setInputPassword(e.target.value)}
-          />
+          <div className="relative w-full">
+            <input
+              className="auth-form-input w-full pr-10"
+              type={isPasswordVisible ? "text" : "password"}
+              placeholder="Password"
+              required
+              minLength={3}
+              onChange={(e) => setInputPassword(e.target.value)}
+            />
+            <img
+              src={EyeIcon}
+              onClick={() => setIsPasswordVisible((p) => !p)}
+              alt="toggle password visibility"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer w-5 h-5"
+            />
+          </div>
+
+          {isError && (
+            <p className="absolute top-full italic text-main-red text-[14px] ">
+              {errorMessage}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-[24px]">
           <button

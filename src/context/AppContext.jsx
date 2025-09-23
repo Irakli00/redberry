@@ -18,15 +18,18 @@ function AppProvider({ children }) {
 
   useEffect(() => {
     const activeUser = localStorage.getItem("user");
+
     if (activeUser) {
       setUser(JSON.parse(activeUser));
     }
   }, []);
 
   function loginUser(userData, token) {
-    localStorage.setItem("token", JSON.stringify(token));
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
+    if (token) localStorage.setItem("token", JSON.stringify(token));
+    if (userData) {
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+    }
   }
 
   return (

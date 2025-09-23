@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
 
+import EyeIcon from "../../assets/icons/eye.svg";
 import CameraIcon from "../../assets/icons/camera.svg";
 
 import { register } from "../../services/auth";
@@ -16,12 +17,20 @@ function RegisterForm() {
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState("");
   const [inputUsername, setinputUsername] = useState("");
   const [avatar, setAvatar] = useState(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordConfirmVisible, setIsPasswordConfirmVisible] =
+    useState(false);
+  const [errorMessages, setErrorMessages] = useState([]);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: register,
     onSuccess: (data) => {
       loginUser(data.user, data.token);
       navigate("/products");
+    },
+    onError: (err) => {
+      // console.log( err.messages);
+      setErrorMessages(err.messages);
     },
   });
 
@@ -89,22 +98,48 @@ function RegisterForm() {
             minLength={3}
             onChange={(e) => setInPutMail(e.target.value)}
           />
-          <input
-            className="auth-form-input"
-            type="password"
-            placeholder="Password"
-            required
-            minLength={3}
-            onChange={(e) => setInputPassword(e.target.value)}
-          />
-          <input
-            className="auth-form-input"
-            type="password"
-            placeholder="Confirm password"
-            required
-            minLength={3}
-            onChange={(e) => setInputPasswordConfirm(e.target.value)}
-          />
+
+          <div className="relative w-full">
+            <input
+              className="auth-form-input w-full pr-10"
+              type={isPasswordVisible ? "text" : "password"}
+              placeholder="Password"
+              required
+              minLength={3}
+              onChange={(e) => setInputPassword(e.target.value)}
+            />
+            <img
+              src={EyeIcon}
+              onClick={() => setIsPasswordVisible((p) => !p)}
+              alt="toggle password visibility"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer w-5 h-5"
+            />
+          </div>
+          <div className="relative w-full">
+            <input
+              className="auth-form-input w-full pr-10"
+              placeholder="Confirm password"
+              onChange={(e) => setInputPasswordConfirm(e.target.value)}
+              type={isPasswordConfirmVisible ? "text" : "password"}
+              required
+              minLength={3}
+            />
+            <img
+              src={EyeIcon}
+              onClick={() => setIsPasswordConfirmVisible((p) => !p)}
+              alt="toggle password visibility"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer w-5 h-5"
+            />
+          </div>
+
+          <div>
+            {isError &&
+              errorMessages.map((message) => (
+                <p className=" top-full italic text-main-red text-[14px]">
+                  {message}
+                </p>
+              ))}
+          </div>
         </div>
         <div className="flex flex-col gap-[24px]">
           <button
