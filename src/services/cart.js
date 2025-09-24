@@ -94,4 +94,30 @@ async function removeFromCart(itemId) {
   return res.json();
 }
 
-export { getCart, addToCart, updateCartItem, removeFromCart };
+async function checkout({ firstname, surname, email, address, zipCode }) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(
+    `https://api.redseam.redberryinternship.ge/api/cart/checkout`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
+      },
+      body: JSON.stringify({
+        name: firstname,
+        surname,
+        email,
+        address,
+        zip_code: zipCode,
+      }),
+    }
+  );
+
+  if (!res.ok) throw new Error("couldn't checkout");
+
+  return res.json();
+}
+
+export { getCart, addToCart, updateCartItem, removeFromCart, checkout };

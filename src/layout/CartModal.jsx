@@ -7,6 +7,10 @@ import EmptyCart from "../elements/cart/EmptyCart";
 function CartModal() {
   const { cartModalOpen, setCartModalOpen, cart } = useContext(AppContext);
 
+  const cartItemCount =
+    cart.length &&
+    cart.map((el) => el.quantity).reduce((acc, curr) => acc + curr); //refactor to oneline later
+
   useEffect(() => {
     if (cartModalOpen) {
       document.body.style.overflow = "hidden";
@@ -30,7 +34,7 @@ function CartModal() {
       />
       <section className="absolute right-0 top-0 bottom-0 p-[40px] w-[540px] bg-white flex flex-col z-50">
         <div className="flex items-center justify-between mb-[60px]">
-          <h2>Shopping cart ({cart.length})</h2>
+          <h2>Shopping cart ({cartItemCount})</h2>
           <button
             className="cursor-pointer"
             onClick={() => setCartModalOpen((p) => !p)}
@@ -46,7 +50,7 @@ function CartModal() {
               <Cart></Cart>
               <Link
                 className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium p-[16px] rounded-[10px]"
-                to={"/products"}
+                to={"/checkout"}
                 onClick={() => setCartModalOpen(false)}
               >
                 Go to checkout

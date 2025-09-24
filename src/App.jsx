@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import { AppProvider } from "./context/AppContext.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
 // notes:
 // X on successful purchase leads to items list page
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
           { path: "register", element: <RegisterForm></RegisterForm> },
         ],
       },
+      { path: "/checkout", element: <Checkout></Checkout> },
     ],
   },
 ]);
