@@ -10,7 +10,7 @@ import FilterIcon from "../assets/icons/filter-icon.svg";
 import { getProducts } from "../services/products";
 import ItemCard from "../elements/products/ProductCard";
 import { AppContext } from "../context/AppContext";
-
+//oh god have mercy
 function Products() {
   const { page, setPage } = useContext(AppContext); //may make link latter
   const [filterOpen, setFilterOpen] = useState(false);
