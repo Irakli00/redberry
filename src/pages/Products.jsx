@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import ReactPaginate from "react-paginate";
 
@@ -14,13 +14,15 @@ import { AppContext } from "../context/AppContext";
 function Products() {
   const { page, setPage } = useContext(AppContext); //may make link latter
   const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
   const [priceFrom, setPriceFrom] = useState(null);
   const [priceTo, setPriceTo] = useState(null);
+  const [sort, setSort] = useState(null);
 
   const { data, isLoading, isSuccess } = useQuery({
-    queryKey: ["products", page],
+    queryKey: ["products", page, sort, priceFrom, priceTo],
     // queryFn: () => getProducts(page, 250, 500),
-    queryFn: () => getProducts(page, priceFrom, priceTo),
+    queryFn: () => getProducts(page, priceFrom, priceTo, sort),
   });
 
   let from = 1,
@@ -46,7 +48,10 @@ function Products() {
           <div className="relative ">
             <button
               className="flex items-center gap-[8px] cursor-pointer "
-              onClick={() => setFilterOpen((p) => !p)}
+              onClick={() => {
+                setFilterOpen((p) => !p);
+                setSortOpen(false);
+              }}
             >
               <img src={FilterIcon} alt="filter" />
               <span>Filter</span>
@@ -56,40 +61,97 @@ function Products() {
                 <h4 className="text-start font-semibold text-[16px] mb-[20px]">
                   Select price
                 </h4>
-                <div className="flex gap-[10px]">
-                  <input
-                    className="border w-full min-w-[175px] border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                    type="text"
-                    name="priceFrom"
-                    id="priceFrom"
-                    placeholder="From"
-                    onChange={(e) => setPriceFrom(e.target.value)}
-                  />
-                  <input
-                    className="min-w-[175px] w-full border border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                    type="text"
-                    name="priceTo"
-                    id="priceTo"
-                    placeholder="To"
-                    onChange={(e) => setPriceTo(e.target.value)}
-                  />
-                </div>
-                <button
-                  onClick={() => {
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const data = Object.fromEntries(formData.entries());
+                    setPriceFrom(data.priceFrom);
+                    setPriceTo(data.priceTo);
                     setFilterOpen(false);
                   }}
-                  className="cursor-pointer bg-main-red mt-[10px] self-end py-[10px] px-[42px] text-white rounded-[10px]"
-                  disabled={!priceFrom && !priceTo}
+                  className="flex flex-col gap-[10px]"
                 >
-                  Apply
-                </button>
+                  <div className="flex gap-[10px]">
+                    <input
+                      className="border w-full min-w-[175px] border-light-gray rounded-[8px] py-[10px] px-[12px]"
+                      type="text"
+                      name="priceFrom"
+                      id="priceFrom"
+                      placeholder="From"
+                      required
+                    />
+                    <input
+                      className="min-w-[175px] w-full border border-light-gray rounded-[8px] py-[10px] px-[12px]"
+                      type="text"
+                      name="priceTo"
+                      id="priceTo"
+                      placeholder="To"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="cursor-pointer bg-main-red mt-[10px] self-end py-[10px] px-[42px] text-white rounded-[10px]"
+                  >
+                    Apply
+                  </button>
+                </form>
               </div>
             )}
           </div>
-          <button className="flex items-center gap-[8px] cursor-pointer">
-            <span>Sort by</span>
-            <img src={IconDown} alt="sort" />
-          </button>
+          <div className="relative">
+            <button
+              className="flex items-center gap-[8px] cursor-pointer"
+              onClick={() => {
+                setSortOpen((p) => !p);
+                setFilterOpen(false);
+              }}
+            >
+              <span>Sort by</span>
+              <img src={IconDown} alt="sort" />
+            </button>
+
+            {sortOpen && (
+              <div className="flex flex-col bg-white rounded-[8px] border border-light-gray absolute right-0 top-[120%] w-[223px] overflow-hidden">
+                <h4 className="text-start font-semibold text-[16px] p-[16px]">
+                  Sort by
+                </h4>
+
+                <ul className="flex flex-col gap-[8px]">
+                  <li
+                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                    onClick={() => {
+                      setSortOpen(false);
+                      // setSort()
+                    }}
+                  >
+                    New products first
+                  </li>
+                  <li
+                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                    onClick={() => {
+                      setSortOpen(false);
+
+                      setSort("price");
+                    }}
+                  >
+                    Price, low to high
+                  </li>
+                  <li
+                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                    onClick={() => {
+                      setSortOpen(false);
+
+                      setSort("-price");
+                    }}
+                  >
+                    Price, high to low
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

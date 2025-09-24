@@ -1,9 +1,10 @@
-async function getProducts(page, priceFrom, priceTo) {
+async function getProducts(page, priceFrom, priceTo, sort) {
   const params = new URLSearchParams();
   params.append("page", page);
 
   if (priceFrom) params.append("filter[price_from]", priceFrom);
   if (priceTo) params.append("filter[price_to]", priceTo);
+  if (sort) params.append("sort", sort);
 
   const res = await fetch(
     `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
