@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import ReactPaginate from "react-paginate";
 
@@ -123,7 +123,7 @@ function Products() {
                     className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
                     onClick={() => {
                       setSortOpen(false);
-                      // setSort()
+                      setSort("-created_at");
                     }}
                   >
                     New products first
