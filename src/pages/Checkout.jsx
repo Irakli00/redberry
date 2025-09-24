@@ -2,18 +2,24 @@ import { useContext, useRef } from "react";
 
 import { AppContext } from "../context/AppContext";
 import Cart from "../elements/cart/Cart";
+
 import EnvelopeIcon from "../assets/icons/envelope.svg";
-import { useMutation } from "@tanstack/react-query";
+import SuccessIcon from "../assets/icons/success.svg";
+import CloseIcon from "../assets/icons/close.svg";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { checkout } from "../services/cart";
+import { Link } from "react-router";
 
 function Checkout() {
   const { user } = useContext(AppContext);
   const formRef = useRef(null);
+  const qClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationFn: checkout,
-    onSuccess: (data) => {
-      console.log("we good", data);
+    onSuccess: () => {
+      qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
     },
     // onError: (err) => setErrorMessage(err.message),
   });
@@ -66,19 +72,18 @@ function Checkout() {
                   required
                 />
               </div>
-              <div className="relative">
+              <div className="flex items-center bg-white border border-[#E1DFE1] rounded-[8px]">
+                <img
+                  src={EnvelopeIcon}
+                  className="ml-[12px] w-[16px] h-[16px] pointer-events-none"
+                />
                 <input
-                  className="bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px]  pl-[36px]"
+                  className="flex-1 py-[10.5px] px-[12px] text-[14px] text-dark-blue "
                   placeholder="Email"
                   type="email"
                   name="email"
                   id="email"
                   defaultValue={user?.email}
-                  // value={user.email}
-                />
-                <img
-                  src={EnvelopeIcon}
-                  className="absolute left-[12px] top-1/2 transform -translate-y-1/2 w-[16px] h-[16px] pointer-events-none"
                 />
               </div>
               <div className="flex gap-[24px]">
@@ -112,6 +117,29 @@ function Checkout() {
           </button>
         </div>
       </section>
+
+      {isSuccess && (
+        <aside className="bg-white z-[999] absolute top-0 left-0 bottom-0 right-0">
+          <Link to={"/products"} className="absolute right-[50px] top-[50px]">
+            <img src={CloseIcon} alt="" />
+          </Link>
+          <div className="flex gap-[40px] flex-col h-full justify-center items-center text-center">
+            <img src={SuccessIcon} alt="purchase successful" />
+            <div>
+              <h3 className="font-semibold text-[42px] mb-[16px]">Congrats!</h3>
+              <p className="text-dark-blue text-[14px]">
+                Your order is placed successfully!
+              </p>
+            </div>
+            <Link
+              to={"/products"}
+              className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium p-[16px] rounded-[10px] w-full max-w-[214px] mt-[20px]"
+            >
+              Continue shopping
+            </Link>
+          </div>
+        </aside>
+      )}
     </main>
   );
 }

@@ -58,7 +58,7 @@ function Navbar() {
             </div>
 
             <img
-              className="w-[40px] h-[40px]"
+              className="w-[40px] h-[40px] rounded-[50%]"
               src={user.avatar ?? UserIcon}
               alt={user.username}
             />

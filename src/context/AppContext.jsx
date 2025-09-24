@@ -8,6 +8,7 @@ function AppProvider({ children }) {
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
   const [cartModalOpen, setCartModalOpen] = useState(false);
+  const isAuthorised = !!JSON.parse(localStorage.getItem("token"))?.length;
 
   const { data: cart = [], isLoading: cartLoading } = useQuery({
     queryKey: ["cart", user?.id],
@@ -36,6 +37,7 @@ function AppProvider({ children }) {
     <AppContext.Provider
       value={{
         user,
+        isAuthorised,
         loginUser,
         cartModalOpen,
         setCartModalOpen,

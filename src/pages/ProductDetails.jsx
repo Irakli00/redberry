@@ -6,7 +6,7 @@ import { addToCart } from "../services/cart";
 import { AppContext } from "../context/AppContext";
 
 function ProductDetails() {
-  const { user, cart } = useContext(AppContext);
+  const { user, cart, isAuthorised } = useContext(AppContext);
   const colorMap = {
     White: "#FFFFFF",
     Red: "#FF0000",
@@ -124,9 +124,9 @@ function ProductDetails() {
           <form className="flex flex-col gap-[48px]" onSubmit={handleSubmit}>
             <div>
               <p className="mb-[16px]">
-                {selectedColor === "Default"
+                {selectedColor === "Default" || !selectedColor
                   ? "Choose a color"
-                  : `Color: ${selectedColor ?? data.color}`}
+                  : `Color: ${selectedColor}`}
               </p>
               <ul className="flex items-center gap-[23px] pl-[6px] ">
                 {data.available_colors.map((color) => (
@@ -146,27 +146,29 @@ function ProductDetails() {
               </ul>
             </div>
 
-            <div>
-              <p className="mb-[16px]">Size: {selectedSize ?? data.size}</p>
-              {data.available_sizes && (
-                <ul className="flex gap-[8px] ">
-                  {data.available_sizes.map((size) => (
-                    <li
-                      className="border border-light-gray rounded-[10px] py-[9px] px-[25px] cursor-pointer"
-                      style={{
-                        backgroundColor:
-                          selectedSize === size && "rgba(248, 246, 247, 1)",
-                        border: selectedSize === size && "1px solid black",
-                      }}
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            {(selectedSize || data.size) && (
+              <div>
+                <p className="mb-[16px]">Size: {selectedSize ?? data.size}</p>
+                {data.available_sizes && (
+                  <ul className="flex gap-[8px] ">
+                    {data.available_sizes.map((size) => (
+                      <li
+                        className="border border-light-gray rounded-[10px] py-[9px] px-[25px] cursor-pointer"
+                        style={{
+                          backgroundColor:
+                            selectedSize === size && "rgba(248, 246, 247, 1)",
+                          border: selectedSize === size && "1px solid black",
+                        }}
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
 
             <div>
               {!data.quantity && <p>SOLD OUT</p>}
@@ -192,7 +194,11 @@ function ProductDetails() {
             </div>
 
             <button
-              disabled={cart.filter((item) => data.id === item.id).length}
+              disabled={
+                cart.filter((item) => data.id === item.id).length ||
+                !isAuthorised ||
+                !data.quantity
+              }
               className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]"
             >
               {cart.filter((item) => data.id === item.id).length ? (
@@ -215,7 +221,11 @@ function ProductDetails() {
                     />
                   </svg>
 
-                  <span className="text-white">Add to cart</span>
+                  <span className="text-white">
+                    {!isAuthorised
+                      ? "You need to log in to purchase"
+                      : "Add to cart"}
+                  </span>
                 </>
               )}
             </button>

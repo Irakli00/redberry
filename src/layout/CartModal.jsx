@@ -4,6 +4,8 @@ import { Link } from "react-router";
 import Cart from "../elements/cart/Cart";
 import EmptyCart from "../elements/cart/EmptyCart";
 
+import CloseIcon from "../assets/icons/close.svg";
+
 function CartModal() {
   const { cartModalOpen, setCartModalOpen, cart } = useContext(AppContext);
 
@@ -39,7 +41,7 @@ function CartModal() {
             className="cursor-pointer"
             onClick={() => setCartModalOpen((p) => !p)}
           >
-            X
+            <img src={CloseIcon} alt="close cart" />
           </button>
         </div>
 
