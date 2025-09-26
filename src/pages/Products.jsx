@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ReactPaginate from "react-paginate";
 
 import IconLeft from "../assets/icons/chevron-left.svg";
@@ -10,6 +10,7 @@ import FilterIcon from "../assets/icons/filter-icon.svg";
 import { getProducts } from "../services/products";
 import ItemCard from "../elements/products/ProductCard";
 import { useSearchParams } from "react-router";
+import Button from "../elements/components/Button";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,12 +92,12 @@ function Products() {
                       required
                     />
                   </div>
-                  <button
+                  <Button
+                    className="self-end py-[10px] px-[42px]"
                     type="submit"
-                    className="cursor-pointer bg-main-red mt-[10px] self-end py-[10px] px-[42px] text-white rounded-[10px]"
                   >
                     Apply
-                  </button>
+                  </Button>
                 </form>
               </div>
             )}

@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router";
 import EyeIcon from "../../assets/icons/eye.svg";
 import { logIn } from "../../services/auth";
 import { AppContext } from "../../context/AppContext";
+import Button from "../components/Button";
 
 function LogInForm() {
   const { loginUser } = useContext(AppContext);
@@ -67,12 +68,9 @@ function LogInForm() {
           )}
         </div>
         <div className="flex flex-col gap-[24px]">
-          <button
-            className="bg-main-red text-white py-[10px] cursor-pointer rounded-[10px]"
-            type="submit"
-          >
+          <Button type="submit">
             {isPending ? "Logging in..." : "Log in"}
-          </button>
+          </Button>
           <aside className="flex justify-center gap-[8px]">
             <p className="text-dark-blue cursor-default font-normal">
               Not a member?

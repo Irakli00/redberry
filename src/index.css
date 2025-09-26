@@ -20,6 +20,9 @@
     @apply py-[10.5px] px-[12px] border border-light-gray rounded-[8px] placeholder:text-dark-blue focus:outline focus:outline-main-red;
   } /* invalid:bg-red-500 */
 
+  .orange-btn {
+    @apply cursor-pointer text-white bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px];
+  }
   button {
     @apply transition-opacity duration-[0.2s] ease-in;
   }

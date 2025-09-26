@@ -7,6 +7,7 @@ import CameraIcon from "../../assets/icons/camera.svg";
 
 import { register } from "../../services/auth";
 import { AppContext } from "../../context/AppContext";
+import Button from "../components/Button";
 
 function RegisterForm() {
   const { loginUser } = useContext(AppContext);
@@ -142,13 +143,9 @@ function RegisterForm() {
           </div>
         </div>
         <div className="flex flex-col gap-[24px]">
-          <button
-            className="bg-main-red text-white py-[10px] cursor-pointer rounded-[10px]"
-            type="submit"
-          >
-            {isPending ? "Processing your data..." : "Register"}
-            {/* Register */}
-          </button>
+          <Button type="submit">
+            {isPending ? "Logging in..." : "Log in"}
+          </Button>
           <aside className="flex justify-center gap-[8px]">
             <p className="text-dark-blue cursor-default font-normal">
               Already a member?

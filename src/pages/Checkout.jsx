@@ -10,6 +10,7 @@ import CloseIcon from "../assets/icons/close.svg";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { checkout } from "../services/cart";
 import { Link } from "react-router";
+import Button from "../elements/components/Button";
 
 function Checkout() {
   const { user } = useContext(AppContext);
@@ -109,12 +110,10 @@ function Checkout() {
         </form>
         <div className="flex flex-col flex-1">
           <Cart></Cart>
-          <button
-            className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium p-[16px] rounded-[10px] w-full mt-[20px]"
-            onClick={handlePayClick}
-          >
+
+          <Button className="font-medium mt-[20px]" onClick={handlePayClick}>
             Pay
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -133,7 +132,7 @@ function Checkout() {
             </div>
             <Link
               to={"/products"}
-              className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] text-white font-medium p-[16px] rounded-[10px] w-full max-w-[214px] mt-[20px]"
+              className="orange-btn font-medium w-full max-w-[214px] mt-[20px]"
             >
               Continue shopping
             </Link>
