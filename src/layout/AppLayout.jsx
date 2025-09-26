@@ -1,15 +1,19 @@
-import { Outlet } from "react-router";
+import { Outlet, useMatches } from "react-router";
 
 import Navbar from "./NavBar";
 import CartModal from "./CartModal";
 
 function AppLayout() {
+  const matches = useMatches();
+  const fullWidth = matches.some((m) => m.handle?.fullWidth);
+
   return (
     <>
       <Navbar></Navbar>
-      <CartModal></CartModal>
-      <Outlet></Outlet>
-      {/* <Footer></Footer> */}
+      <main className={fullWidth ? "" : "custom-container"}>
+        <CartModal></CartModal>
+        <Outlet></Outlet>
+      </main>
     </>
   );
 }

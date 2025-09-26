@@ -10,7 +10,7 @@ function Navbar() {
 
   return (
     <header>
-      <div className="flex items-center justify-between py-[28px] m-auto max-w-[1720px]">
+      <div className="custom-container flex items-center justify-between py-[28px] ">
         <NavLink to={"/products"} className="flex gap-[4px]">
           <img src={HeaderLogo} alt="RedSeam Clothing logo" />
           <span className="font-semibold text-main-black">

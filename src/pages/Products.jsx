@@ -38,7 +38,7 @@ function Products() {
   if (isLoading) return <h1>Loading...</h1>; //spinner latter
 
   return (
-    <main className="m-auto max-w-[1720px] mt-[72px]">
+    <section className="mt-[72px]">
       <div className="flex justify-between mb-[32px]">
         <h1 className="font-semibold text-[42px] text-main-black">Products</h1>
         <div className="flex items-center gap-[32px]">
@@ -203,7 +203,7 @@ function Products() {
           activeClassName="border border-main-red text-main-red"
         />
       </aside>
-    </main>
+    </section>
   );
 }
 

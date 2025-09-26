@@ -35,7 +35,10 @@ const router = createBrowserRouter([
       {
         path: "auth",
         element: <Auth></Auth>,
+        handle: { fullWidth: true },
+
         children: [
+          { index: true, element: <Navigate to="logIn" replace /> },
           { path: "logIn", element: <LogInForm></LogInForm> },
           { path: "register", element: <RegisterForm></RegisterForm> },
         ],

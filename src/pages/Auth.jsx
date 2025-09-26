@@ -4,7 +4,7 @@ import AuthBanner from "../assets/imgs/auth-banner.jpg";
 
 function Auth() {
   return (
-    <main className="flex gap-[173px]">
+    <section className="flex gap-[173px]">
       <aside>
         <img
           src={AuthBanner}
@@ -12,7 +12,7 @@ function Auth() {
         />
       </aside>
       <Outlet></Outlet>
-    </main>
+    </section>
   );
 }
 

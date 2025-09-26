@@ -80,7 +80,7 @@ function ProductDetails() {
   if (isLoading) return <h1>ITS A SPINNER</h1>;
 
   return (
-    <main className="m-auto max-w-[1720px] mt-[30px]">
+    <section className="mt-[30px]">
       <aside className="flex text-[14px] font-light">
         <Link to={"/products"}>Listing</Link>
         <p>/</p>
@@ -248,7 +248,7 @@ function ProductDetails() {
           </aside>
         </article>
       </section>
-    </main>
+    </section>
   );
 }
 

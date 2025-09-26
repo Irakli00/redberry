@@ -40,7 +40,7 @@ function Checkout() {
   }
 
   return (
-    <main className="m-auto max-w-[1720px] mt-[72px]">
+    <section className="custom-container mt-[72px]">
       <h1 className="mb-[42px] font-semibold text-[42px] text-main-black">
         Checkout
       </h1>
@@ -139,7 +139,7 @@ function Checkout() {
           </div>
         </aside>
       )}
-    </main>
+    </section>
   );
 }
 
