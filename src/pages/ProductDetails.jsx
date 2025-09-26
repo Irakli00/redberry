@@ -1,11 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
-import { getProduct } from "../services/products";
 import { useContext, useEffect, useState } from "react";
-import { addToCart } from "../services/cart";
+
 import { AppContext } from "../context/AppContext";
+
+import { getProduct } from "../services/products";
+import { addToCart } from "../services/cart";
+
 import SoldOutBanner from "../elements/components/SoldOutBanner";
 import Button from "../elements/components/Button";
+import Spinner from "../elements/components/Spinner";
 
 function ProductDetails() {
   const { user, isAuthorised } = useContext(AppContext);
@@ -37,7 +41,7 @@ function ProductDetails() {
   const qClient = useQueryClient();
   const { id: productId } = useParams();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: productLoading } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
   });
@@ -77,7 +81,7 @@ function ProductDetails() {
     }
   }, [data]);
 
-  if (isLoading) return <h1>ITS A SPINNER</h1>;
+  if (productLoading) return <Spinner></Spinner>;
 
   return (
     <section className="mt-[30px]">

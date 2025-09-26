@@ -1,19 +1,16 @@
 import { useContext } from "react";
-import { AppContext } from "../../context/AppContext";
-import { removeFromCart, updateCartItem } from "../../services/cart";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { AppContext } from "../../context/AppContext";
+
+import { removeFromCart, updateCartItem } from "../../services/cart";
 
 function Cart() {
   const { cart, user } = useContext(AppContext);
+  const totalPrice = cart.reduce((acc, el) => acc + el.price * el.quantity, 0);
   const qClient = useQueryClient();
 
-  const totalPrice = cart
-    .map((el) => {
-      return { price: el.price, quantity: el.quantity };
-    })
-    .reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
-
-  const { mutate: removeMutate } = useMutation({
+  const { mutate: removeMutate, isPending: removePending } = useMutation({
     mutationFn: removeFromCart,
     onSettled: () => {
       qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
@@ -76,9 +73,10 @@ function Cart() {
                     +
                   </button>
                 </div>
+
                 <button
                   className="cursor-pointer font-normal text-dark-blue"
-                  // onClick={() => removeMutate(el.id)}
+                  style={{ cursor: removePending && "progress" }}
                   onClick={() => removeMutate(el)}
                 >
                   Remove

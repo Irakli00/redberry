@@ -21,7 +21,7 @@
   } /* invalid:bg-red-500 */
 
   .custom-container {
-    @apply m-auto max-w-[1720px];
+    @apply flex justify-center items-center m-auto max-w-[1720px];
   }
   .orange-btn {
     @apply cursor-pointer text-white bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px];

@@ -30,7 +30,6 @@ function RegisterForm() {
       navigate("/products");
     },
     onError: (err) => {
-      // console.log( err.messages);
       setErrorMessages(err.messages);
     },
   });

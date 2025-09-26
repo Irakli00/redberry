@@ -1,19 +1,20 @@
 import { useContext, useRef } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { AppContext } from "../context/AppContext";
+import EmptyCart from "../elements/cart/EmptyCart";
 import Cart from "../elements/cart/Cart";
 
 import EnvelopeIcon from "../assets/icons/envelope.svg";
 import SuccessIcon from "../assets/icons/success.svg";
 import CloseIcon from "../assets/icons/close.svg";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { checkout } from "../services/cart";
 import { Link } from "react-router";
 import Button from "../elements/components/Button";
 
 function Checkout() {
-  const { user } = useContext(AppContext);
+  const { user, cart } = useContext(AppContext);
   const formRef = useRef(null);
   const qClient = useQueryClient();
 
@@ -39,8 +40,15 @@ function Checkout() {
     }
   }
 
+  if (!cart.length)
+    return (
+      <div className="mt-[15dvh]">
+        <EmptyCart></EmptyCart>
+      </div>
+    );
+
   return (
-    <section className="custom-container mt-[72px]">
+    <section className="mt-[72px] w-full">
       <h1 className="mb-[42px] font-semibold text-[42px] text-main-black">
         Checkout
       </h1>

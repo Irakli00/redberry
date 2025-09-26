@@ -1,7 +1,7 @@
-async function getProducts(page, priceFrom, priceTo, sort) {
+async function getProducts(page = 1, priceFrom, priceTo, sort) {
   const params = new URLSearchParams();
-  params.append("page", page);
 
+  if (page) params.append("page", page || 1);
   if (priceFrom) params.append("filter[price_from]", priceFrom);
   if (priceTo) params.append("filter[price_to]", priceTo);
   if (sort) params.append("sort", sort);

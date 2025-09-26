@@ -1,20 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
+
+import { getProducts } from "../services/products";
+
+import ItemCard from "../elements/products/ProductCard";
+import Button from "../elements/components/Button";
 
 import IconLeft from "../assets/icons/chevron-left.svg";
 import IconRight from "../assets/icons/chevron-right.svg";
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
-
-import { getProducts } from "../services/products";
-import ItemCard from "../elements/products/ProductCard";
-import { useSearchParams } from "react-router";
-import Button from "../elements/components/Button";
+import Spinner from "../elements/components/Spinner";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
+  const page = +searchParams.get("page") || 1;
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -27,22 +29,22 @@ function Products() {
     queryFn: () => getProducts(page, priceFrom, priceTo, sort),
   });
 
-  let from = 1,
-    lastPage = 100,
-    total;
+  if (isLoading) return <Spinner></Spinner>;
 
-  if (isSuccess) {
-    ({ from, last_page: lastPage, total } = data.meta);
-  }
+  if (!isSuccess) return; //for now
 
-  if (isLoading) return <h1>Loading...</h1>; //spinner latter
+  const {
+    data: products,
+    links: _,
+    meta: { from, last_page: lastPage, total },
+  } = data;
 
   return (
     <section className="mt-[72px]">
       <div className="flex justify-between mb-[32px]">
         <h1 className="font-semibold text-[42px] text-main-black">Products</h1>
         <div className="flex items-center gap-[32px]">
-          <p className="">
+          <p>
             showing {from}-{from + 9 <= total ? from + 9 : total} of {total}{" "}
             results
           </p>
@@ -159,7 +161,7 @@ function Products() {
 
       <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
         {isSuccess &&
-          data.data.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
+          products.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
       </section>
 
       <aside className="flex justify-center mt-[90px] mb-[200px]">
