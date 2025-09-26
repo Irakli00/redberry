@@ -7,12 +7,13 @@ import { getProducts } from "../services/products";
 
 import ItemCard from "../elements/products/ProductCard";
 import Button from "../elements/components/Button";
+import Spinner from "../elements/components/Spinner";
+import FilterTab from "../elements/components/FilterTab";
 
 import IconLeft from "../assets/icons/chevron-left.svg";
 import IconRight from "../assets/icons/chevron-right.svg";
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
-import Spinner from "../elements/components/Spinner";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,6 +24,30 @@ function Products() {
   const [priceFrom, setPriceFrom] = useState(null);
   const [priceTo, setPriceTo] = useState(null);
   const [sort, setSort] = useState(null);
+
+  const activeFilters = [];
+
+  if (priceFrom || priceTo) {
+    activeFilters.push({
+      label: `Price: ${priceFrom || 0} - ${priceTo || "∞"}`,
+      onRemove: () => {
+        setPriceFrom(null);
+        setPriceTo(null);
+      },
+    });
+  }
+
+  if (sort) {
+    let label = "";
+    if (sort === "-created_at") label = "Newest";
+    if (sort === "price") label = "Price: Low to high";
+    if (sort === "-price") label = "Price: High to low";
+
+    activeFilters.push({
+      label,
+      onRemove: () => setSort(null),
+    });
+  }
 
   const { data, isLoading, isSuccess } = useQuery({
     queryKey: ["products", page, sort, priceFrom, priceTo],
@@ -41,7 +66,7 @@ function Products() {
 
   return (
     <section className="mt-[72px]">
-      <div className="flex justify-between mb-[32px]">
+      <div className="flex justify-between mb-[20px]">
         <h1 className="font-semibold text-[42px] text-main-black">Products</h1>
         <div className="flex items-center gap-[32px]">
           <p>
@@ -158,6 +183,18 @@ function Products() {
           </div>
         </div>
       </div>
+
+      {(sort || priceFrom || priceTo) && (
+        <div className="flex gap-[20px] mt-[20px] mb-[26px]">
+          {activeFilters.map((f, i) => (
+            <FilterTab
+              label={f.label}
+              key={i}
+              onRemove={f.onRemove}
+            ></FilterTab>
+          ))}
+        </div>
+      )}
 
       <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
         {isSuccess &&

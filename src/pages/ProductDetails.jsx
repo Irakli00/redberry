@@ -46,8 +46,8 @@ function ProductDetails() {
     queryFn: () => getProduct(productId),
   });
 
-  const [selectedColor, setSelectedColor] = useState(data?.color);
-  const [selectedSize, setSelectedSize] = useState(data?.size);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [mainPhoto, setMainPhoto] = useState(null);
 
@@ -75,7 +75,11 @@ function ProductDetails() {
 
   useEffect(() => {
     if (data) {
-      setSelectedColor(data.color === "Default" ? null : data?.color);
+      setSelectedColor(
+        !data.color || data.color === "Default"
+          ? data.available_colors[0]
+          : data.color
+      );
       setSelectedSize(data.size);
       setMainPhoto(data.cover_image);
     }
@@ -91,7 +95,7 @@ function ProductDetails() {
         <Link to={"#"}>Product</Link>
       </aside>
 
-      <section className="flex gap-11 mt-[50px]">
+      <section className="flex gap-11 mt-[50px] ">
         <div className="flex gap-[24px]">
           <div className="flex gap-[9px] flex-col">
             {data.images.map((img, i) => (
@@ -117,7 +121,7 @@ function ProductDetails() {
           </div>
         </div>
 
-        <article className="flex flex-col gap-[56px] overflow-hidden">
+        <article className="flex flex-col gap-[56px] overflow-hidden w-full">
           <div className="flex flex-col gap-[21px]">
             <h1 className="text-main-black text-[32px] font-semibold">
               {data.name}
@@ -132,18 +136,13 @@ function ProductDetails() {
           ) : (
             <form className="flex flex-col gap-[48px]" onSubmit={handleSubmit}>
               <div>
-                <p className="mb-[16px]">
-                  {selectedColor === "Default" || !selectedColor
-                    ? "Choose a color"
-                    : `Color: ${selectedColor}`}
-                </p>
+                <p className="mb-[16px]">Color: {selectedColor}</p>
                 <ul className="flex items-center gap-[23px] pl-[6px] ">
                   {data.available_colors.map((color) => (
                     <li
                       key={color}
                       style={{
                         background: colorMap[color],
-
                         outline:
                           selectedColor === color && "1px solid lightgray",
                         outlineOffset: selectedColor === color && "5px",

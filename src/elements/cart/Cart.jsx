@@ -26,7 +26,7 @@ function Cart() {
 
   return (
     <>
-      <ul className="flex-1 max-h-[500px] overflow-y-scroll ">
+      <ul className="flex-1 max-h-[500px] overflow-y-scroll">
         {cart.map((el) => (
           <li
             key={`${el.id}_${el.size}_${el.color}`}
