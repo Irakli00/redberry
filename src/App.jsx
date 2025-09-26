@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     element: <AppLayout></AppLayout>,
     children: [
       { index: true, element: <Navigate to="/products" replace /> },
-      { path: "products", element: <Products></Products> },
+      { path: "/products", element: <Products></Products> },
       { path: "/products/:id", element: <ProductDetails></ProductDetails> },
       {
         path: "auth",

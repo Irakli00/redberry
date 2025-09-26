@@ -9,10 +9,12 @@ import FilterIcon from "../assets/icons/filter-icon.svg";
 
 import { getProducts } from "../services/products";
 import ItemCard from "../elements/products/ProductCard";
-import { AppContext } from "../context/AppContext";
-//oh god have mercy
+import { useSearchParams } from "react-router";
+
 function Products() {
-  const { page, setPage } = useContext(AppContext); //may make link latter
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [priceFrom, setPriceFrom] = useState(null);
@@ -21,7 +23,6 @@ function Products() {
 
   const { data, isLoading, isSuccess } = useQuery({
     queryKey: ["products", page, sort, priceFrom, priceTo],
-    // queryFn: () => getProducts(page, 250, 500),
     queryFn: () => getProducts(page, priceFrom, priceTo, sort),
   });
 
@@ -75,7 +76,7 @@ function Products() {
                   <div className="flex gap-[10px]">
                     <input
                       className="border w-full min-w-[175px] border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                      type="text"
+                      type="number"
                       name="priceFrom"
                       id="priceFrom"
                       placeholder="From"
@@ -83,7 +84,7 @@ function Products() {
                     />
                     <input
                       className="min-w-[175px] w-full border border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                      type="text"
+                      type="number"
                       name="priceTo"
                       id="priceTo"
                       placeholder="To"
@@ -168,7 +169,8 @@ function Products() {
                 className="cursor-pointer"
                 src={IconLeft}
                 alt="previous page"
-                onClick={setPage((p) => p--)}
+                // onClick={setPage((p) => p--)}
+                onClick={() => setSearchParams({ page: page + 1 })}
               ></img>
             )
           }
@@ -178,7 +180,7 @@ function Products() {
                 className="cursor-pointer"
                 src={IconRight}
                 alt="next page"
-                onClick={setPage((p) => p++)}
+                onClick={() => setSearchParams({ page: page - 1 })}
               ></img>
             )
           }
@@ -192,7 +194,8 @@ function Products() {
           pageCount={lastPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
-          onPageChange={(e) => setPage(e.selected + 1)}
+          // onPageChange={(e) => setPage(e.selected + 1)}
+          onPageChange={(e) => setSearchParams({ page: e.selected + 1 })}
           containerClassName="flex items-center gap-[8px]"
           pageClassName="border border-light-gray text-dark-gray/60 rounded-[4px]"
           pageLinkClassName="w-[32px] h-[32px] cursor-pointer flex items-center justify-center"

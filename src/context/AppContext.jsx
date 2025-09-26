@@ -6,7 +6,6 @@ const AppContext = createContext();
 
 function AppProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [page, setPage] = useState(1);
   const [cartModalOpen, setCartModalOpen] = useState(false);
   const isAuthorised = !!JSON.parse(localStorage.getItem("token"))?.length;
 
@@ -43,8 +42,6 @@ function AppProvider({ children }) {
         setCartModalOpen,
         cart,
         cartLoading,
-        page,
-        setPage,
       }}
     >
       {children}
