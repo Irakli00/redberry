@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import { removeFromCart, updateCartItem } from "../../services/cart";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,10 +6,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 function Cart() {
   const { cart, user } = useContext(AppContext);
   const qClient = useQueryClient();
-
-  const cartMap = {};
-  cart.forEach((el) => (cartMap[el.id] = el.quantity));
-  const [quantities, setQuantities] = useState(cartMap);
 
   const totalPrice = cart
     .map((el) => {
@@ -24,7 +20,7 @@ function Cart() {
     },
   });
 
-  const { mutate: updateMutate } = useMutation({
+  const { mutate: updateMutate, isPending: updatePending } = useMutation({
     mutationFn: updateCartItem,
     onSettled: () => {
       qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
@@ -35,7 +31,10 @@ function Cart() {
     <>
       <ul className="flex-1 max-h-[500px] overflow-y-scroll ">
         {cart.map((el) => (
-          <li key={el.id} className="flex gap-[17px] mb-4">
+          <li
+            key={`${el.id}_${el.size}_${el.color}`}
+            className="flex gap-[17px] mb-4"
+          >
             <img
               className="w-[100px] h-[134px]"
               src={el.cover_image}
@@ -52,31 +51,25 @@ function Cart() {
                 <div className=" flex justify-around items-center gap-[9px] border border-light-gray rounded-[22px] px-[11px] py-[6px]">
                   <button
                     className="cursor-pointer px-1"
+                    style={{ cursor: updatePending && "progress" }}
                     onClick={() => {
-                      console.log(quantities, quantities[el.id], el.quantity);
                       updateMutate({
                         item: el,
-                        quantity: quantities[el.id] ?? el.quantity,
-                      });
-                      setQuantities((p) => {
-                        return { ...p, [el.id]: (p[el.id] ?? el.quantity) - 1 };
+                        quantity: el.quantity - 1,
                       });
                     }}
-                    disabled={(quantities[el.id] ?? el.quantity) <= 1}
+                    disabled={el.quantity <= 1}
                   >
                     -
                   </button>
-                  <p>{quantities[el.id] ?? el.quantity}</p>
+                  <p>{el.quantity}</p>
                   <button
                     className="cursor-pointer px-1"
+                    style={{ cursor: updatePending && "progress" }}
                     onClick={() => {
-                      console.log(quantities, quantities[el.id], el.quantity);
                       updateMutate({
                         item: el,
-                        quantity: quantities[el.id] ?? el.quantity,
-                      });
-                      setQuantities((p) => {
-                        return { ...p, [el.id]: (p[el.id] ?? el.quantity) + 1 };
+                        quantity: el.quantity + 1,
                       });
                     }}
                   >
@@ -85,7 +78,8 @@ function Cart() {
                 </div>
                 <button
                   className="cursor-pointer font-normal text-dark-blue"
-                  onClick={() => removeMutate(el.id)}
+                  // onClick={() => removeMutate(el.id)}
+                  onClick={() => removeMutate(el)}
                 >
                   Remove
                 </button>

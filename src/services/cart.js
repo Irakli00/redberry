@@ -46,7 +46,7 @@ async function updateCartItem({ item, quantity }) {
   const res = await fetch(
     `https://api.redseam.redberryinternship.ge/api/cart/products/${item.id}`,
     {
-      method: "POST",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
@@ -59,22 +59,13 @@ async function updateCartItem({ item, quantity }) {
       }),
     }
   );
-  console.log(
-    quantity,
-    {
-      quantity,
-      color: item.color,
-      size: item.size,
-    },
-    res.json()
-  );
 
   if (!res.ok) throw new Error("couldn't add to a cart");
 
   return res.json();
 }
 
-async function removeFromCart(itemId) {
+async function removeFromCart({ id: itemId, quantity, color, size }) {
   const token = localStorage.getItem("token");
 
   const res = await fetch(
@@ -86,6 +77,11 @@ async function removeFromCart(itemId) {
         accept: "application/json",
         Authorization: `Bearer ${token.replace(/^"|"$/g, "")}`,
       },
+      body: JSON.stringify({
+        quantity,
+        color,
+        size,
+      }),
     }
   );
 

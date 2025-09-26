@@ -24,6 +24,6 @@
     @apply transition-opacity duration-[0.2s] ease-in;
   }
   button:disabled {
-    @apply opacity-70 cursor-default!;
+    @apply opacity-70 cursor-not-allowed!;
   }
 }
