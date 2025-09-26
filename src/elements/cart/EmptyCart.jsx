@@ -3,11 +3,13 @@ import EmptyCartIcon from "../../assets/icons/empty-cart.svg";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router";
 
-function EmptyCart() {
+function EmptyCart({ className }) {
   const { setCartModalOpen } = useContext(AppContext);
 
   return (
-    <article className="flex flex-col justify-center items-center  text-center">
+    <article
+      className={`flex flex-col justify-center items-center  text-center ${className}`}
+    >
       <img src={EmptyCartIcon} alt="empty cart" className="max-w-[170px]" />
       <div>
         <h3 className="font-semibold text-[24px] text-main-black mb-[10px]">

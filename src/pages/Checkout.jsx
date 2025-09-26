@@ -1,17 +1,18 @@
 import { useContext, useRef } from "react";
+import { Link } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { AppContext } from "../context/AppContext";
+
+import { checkout } from "../services/cart";
+
 import EmptyCart from "../elements/cart/EmptyCart";
 import Cart from "../elements/cart/Cart";
+import Button from "../elements/components/Button";
 
 import EnvelopeIcon from "../assets/icons/envelope.svg";
 import SuccessIcon from "../assets/icons/success.svg";
 import CloseIcon from "../assets/icons/close.svg";
-
-import { checkout } from "../services/cart";
-import { Link } from "react-router";
-import Button from "../elements/components/Button";
 
 function Checkout() {
   const { user, cart } = useContext(AppContext);
@@ -39,13 +40,6 @@ function Checkout() {
       formRef.current.requestSubmit();
     }
   }
-
-  if (!cart.length)
-    return (
-      <div className="mt-[15dvh]">
-        <EmptyCart></EmptyCart>
-      </div>
-    );
 
   return (
     <section className="mt-[72px] w-full">
@@ -116,12 +110,21 @@ function Checkout() {
             </div>
           </div>
         </form>
-        <div className="flex flex-col flex-1">
-          <Cart></Cart>
+        <div className="flex flex-col flex-1 justify-center">
+          {!cart.length ? (
+            <EmptyCart></EmptyCart>
+          ) : (
+            <>
+              <Cart></Cart>
 
-          <Button className="font-medium mt-[20px]" onClick={handlePayClick}>
-            Pay
-          </Button>
+              <Button
+                className="font-medium mt-[20px]"
+                onClick={handlePayClick}
+              >
+                Pay
+              </Button>
+            </>
+          )}
         </div>
       </section>
 

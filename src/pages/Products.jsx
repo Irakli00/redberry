@@ -14,16 +14,17 @@ import IconLeft from "../assets/icons/chevron-left.svg";
 import IconRight from "../assets/icons/chevron-right.svg";
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
+import SortOption from "../elements/components/SortOption";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = +searchParams.get("page") || 1;
+  const priceFrom = searchParams.get("priceFrom") || null;
+  const priceTo = searchParams.get("priceTo") || null;
+  const sort = searchParams.get("sort") || null;
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [priceFrom, setPriceFrom] = useState(null);
-  const [priceTo, setPriceTo] = useState(null);
-  const [sort, setSort] = useState(null);
 
   const activeFilters = [];
 
@@ -31,8 +32,10 @@ function Products() {
     activeFilters.push({
       label: `Price: ${priceFrom || 0} - ${priceTo || "∞"}`,
       onRemove: () => {
-        setPriceFrom(null);
-        setPriceTo(null);
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete("priceFrom");
+        newParams.delete("priceTo");
+        setSearchParams(newParams);
       },
     });
   }
@@ -45,7 +48,11 @@ function Products() {
 
     activeFilters.push({
       label,
-      onRemove: () => setSort(null),
+      onRemove: () => {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete("sort");
+        setSearchParams(newParams);
+      },
     });
   }
 
@@ -55,8 +62,6 @@ function Products() {
   });
 
   if (isLoading) return <Spinner></Spinner>;
-
-  if (!isSuccess) return; //for now
 
   const {
     data: products,
@@ -70,8 +75,8 @@ function Products() {
         <h1 className="font-semibold text-[42px] text-main-black">Products</h1>
         <div className="flex items-center gap-[32px]">
           <p>
-            showing {from}-{from + 9 <= total ? from + 9 : total} of {total}{" "}
-            results
+            showing {from || 0}-{from + 9 <= total ? from + 9 : total} of{" "}
+            {total} results
           </p>
           <div className="w-[1px] h-[14px] bg-light-gray"></div>
           <div className="relative ">
@@ -95,8 +100,16 @@ function Products() {
                     e.preventDefault();
                     const formData = new FormData(e.target);
                     const data = Object.fromEntries(formData.entries());
-                    setPriceFrom(data.priceFrom);
-                    setPriceTo(data.priceTo);
+
+                    const newParams = new URLSearchParams(searchParams);
+                    if (data.priceFrom) {
+                      newParams.set("priceFrom", data.priceFrom);
+                    }
+                    if (data.priceTo) {
+                      newParams.set("priceTo", data.priceTo);
+                    }
+
+                    setSearchParams(newParams);
                     setFilterOpen(false);
                   }}
                   className="flex flex-col gap-[10px]"
@@ -108,6 +121,7 @@ function Products() {
                       name="priceFrom"
                       id="priceFrom"
                       placeholder="From"
+                      defaultValue={priceFrom || ""}
                       required
                     />
                     <input
@@ -116,6 +130,7 @@ function Products() {
                       name="priceTo"
                       id="priceTo"
                       placeholder="To"
+                      defaultValue={priceTo || ""}
                       required
                     />
                   </div>
@@ -147,36 +162,37 @@ function Products() {
                   Sort by
                 </h4>
 
-                <ul className="flex flex-col gap-[8px]">
-                  <li
-                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                <ul className="flex flex-col ">
+                  <SortOption
                     onClick={() => {
                       setSortOpen(false);
-                      setSort("-created_at");
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set("sort", "-created_at");
+                      setSearchParams(newParams);
                     }}
                   >
                     New products first
-                  </li>
-                  <li
-                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                  </SortOption>
+                  <SortOption
                     onClick={() => {
                       setSortOpen(false);
-
-                      setSort("price");
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set("sort", "price");
+                      setSearchParams(newParams);
                     }}
                   >
                     Price, low to high
-                  </li>
-                  <li
-                    className="cursor-pointer px-[16px] py-[4px] hover:bg-main-red hover:text-white"
+                  </SortOption>
+                  <SortOption
                     onClick={() => {
                       setSortOpen(false);
-
-                      setSort("-price");
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set("sort", "-price");
+                      setSearchParams(newParams);
                     }}
                   >
-                    Price, high to low
-                  </li>
+                    Price,high to low
+                  </SortOption>
                 </ul>
               </div>
             )}
@@ -197,51 +213,57 @@ function Products() {
       )}
 
       <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
+        {!products.length && (
+          <article className="text-main-red  text-center col-span-4">
+            <h1 className="text-[62px] font-bold">No items found</h1>
+            <p className="text-[22px] ">Try other filters</p>
+          </article>
+        )}
         {isSuccess &&
           products.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
       </section>
 
-      <aside className="flex justify-center mt-[90px] mb-[200px]">
-        <ReactPaginate
-          previousLabel={
-            page > 1 && (
-              <img
-                className="cursor-pointer"
-                src={IconLeft}
-                alt="previous page"
-                // onClick={setPage((p) => p--)}
-                onClick={() => setSearchParams({ page: page + 1 })}
-              ></img>
-            )
-          }
-          nextLabel={
-            page < lastPage && (
-              <img
-                className="cursor-pointer"
-                src={IconRight}
-                alt="next page"
-                onClick={() => setSearchParams({ page: page - 1 })}
-              ></img>
-            )
-          }
-          breakLabel={
-            <span className="flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
-              ...
-            </span>
-          }
-          forcePage={page - 1}
-          breakLinkClassName="pointer-events-none cursor-default"
-          pageCount={lastPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={2}
-          // onPageChange={(e) => setPage(e.selected + 1)}
-          onPageChange={(e) => setSearchParams({ page: e.selected + 1 })}
-          containerClassName="flex items-center gap-[8px]"
-          pageClassName="border border-light-gray text-dark-gray/60 rounded-[4px]"
-          pageLinkClassName="w-[32px] h-[32px] cursor-pointer flex items-center justify-center"
-          activeClassName="border border-main-red text-main-red"
-        />
-      </aside>
+      {lastPage > 1 && (
+        <aside className="flex justify-center mt-[90px] mb-[200px]">
+          <ReactPaginate
+            previousLabel={
+              page > 1 && (
+                <img
+                  className="cursor-pointer"
+                  src={IconLeft}
+                  alt="previous page"
+                  onClick={() => setSearchParams({ page: page + 1 })}
+                ></img>
+              )
+            }
+            nextLabel={
+              page < lastPage && (
+                <img
+                  className="cursor-pointer"
+                  src={IconRight}
+                  alt="next page"
+                  onClick={() => setSearchParams({ page: page - 1 })}
+                ></img>
+              )
+            }
+            breakLabel={
+              <span className="flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
+                ...
+              </span>
+            }
+            forcePage={page - 1}
+            breakLinkClassName="pointer-events-none cursor-default"
+            pageCount={lastPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={2}
+            onPageChange={(e) => setSearchParams({ page: e.selected + 1 })}
+            containerClassName="flex items-center gap-[8px]"
+            pageClassName="border border-light-gray text-dark-gray/60 rounded-[4px]"
+            pageLinkClassName="w-[32px] h-[32px] cursor-pointer flex items-center justify-center"
+            activeClassName="border border-main-red text-main-red"
+          />
+        </aside>
+      )}
     </section>
   );
 }

@@ -11,6 +11,8 @@ import SoldOutBanner from "../elements/components/SoldOutBanner";
 import Button from "../elements/components/Button";
 import Spinner from "../elements/components/Spinner";
 
+import SuccessIcon from "../assets/icons/success.svg";
+
 function ProductDetails() {
   const { user, isAuthorised } = useContext(AppContext);
   const colorMap = {
@@ -51,6 +53,8 @@ function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [mainPhoto, setMainPhoto] = useState(null);
 
+  const [showMessage, setShowMessage] = useState(false);
+
   const {
     mutate: addToCartMutation,
     // isPending: isBeingAdded,
@@ -59,6 +63,8 @@ function ProductDetails() {
     mutationFn: addToCart,
     onSuccess: () => {
       qClient.invalidateQueries({ queryKey: ["cart", user?.id] });
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 1200);
     },
   });
 
@@ -205,7 +211,7 @@ function ProductDetails() {
               <Button
                 disableCondition={!isAuthorised || !data.quantity}
                 type="submit"
-                className="cursor-pointer bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px]"
+                className=""
               >
                 <>
                   <svg
@@ -224,11 +230,21 @@ function ProductDetails() {
                     />
                   </svg>
 
-                  <span className="text-white">
+                  <span className="text-white relative flex items-center gap-2">
                     {!isAuthorised
                       ? "You need to log in for purchases"
                       : "Add to cart"}
                   </span>
+                  {showMessage && (
+                    <div className="absolute bg-main-red flex items-center gap-[5px]">
+                      <p>Added successfuly</p>
+                      <img
+                        src={SuccessIcon}
+                        alt="Success"
+                        className={`h-[20px] `}
+                      />
+                    </div>
+                  )}
                 </>
               </Button>
             </form>

@@ -48,7 +48,7 @@ function CartModal() {
         </div>
 
         <div className="flex flex-col justify-between flex-1 ">
-          {!cart.length && <EmptyCart></EmptyCart>}
+          {!cart.length && <EmptyCart className="mt-[150px]"></EmptyCart>}
           {cart.length >= 1 && (
             <>
               <Cart></Cart>
