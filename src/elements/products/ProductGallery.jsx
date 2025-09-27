@@ -26,7 +26,7 @@ function ProductGallery({
 
       <div>
         <img
-          className="max-w-[700px]"
+          className="max-w-[700px] border border-light-gray"
           src={mainPhoto ?? coverImage}
           alt={imgAlt}
         />

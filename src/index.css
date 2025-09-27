@@ -33,6 +33,10 @@ input[type="number"] {
   .custom-container {
     @apply m-auto max-w-[1720px];
   }
+
+  .checkout-input {
+    @apply bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px];
+  }
   .orange-btn {
     @apply cursor-pointer text-white bg-main-red flex justify-center items-center gap-[10px] p-[16px] rounded-[10px];
   }

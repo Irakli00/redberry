@@ -1,22 +1,24 @@
 import { useContext, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-
-import EyeIcon from "../../assets/icons/eye.svg";
-import CameraIcon from "../../assets/icons/camera.svg";
+import { useMutation } from "@tanstack/react-query";
 
 import { register } from "../../services/auth";
+
 import { AppContext } from "../../context/AppContext";
+
 import Button from "../components/Button";
+
+import CameraIcon from "../../assets/icons/camera.svg";
+import EyeIcon from "../../assets/icons/eye.svg";
 
 function RegisterForm() {
   const { loginUser } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const [inputMail, setInPutMail] = useState("");
+  const [inputMail, setInputMail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState("");
-  const [inputUsername, setinputUsername] = useState("");
+  const [inputUsername, setInputUsername] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isPasswordConfirmVisible, setIsPasswordConfirmVisible] =
@@ -68,7 +70,31 @@ function RegisterForm() {
                 className="object-cover "
               />
             </div>
-            <span>Upload Image</span>
+            {avatar ? (
+              <div className="flex gap-[15px] items-center text-[14px] text-dark-blue">
+                <div>
+                  <label className=" cursor-pointer" htmlFor="avatarInput2">
+                    Upload new
+                  </label>
+                  <input
+                    type="file"
+                    name="avatarInput2"
+                    id="avatarInput2"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => setAvatar(e.target.files[0])}
+                  />
+                </div>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setAvatar(null)}
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <span>Upload Image</span>
+            )}
           </label>
 
           <input
@@ -88,7 +114,7 @@ function RegisterForm() {
             placeholder="Username"
             required
             minLength={3}
-            onChange={(e) => setinputUsername(e.target.value)}
+            onChange={(e) => setInputUsername(e.target.value)}
           />
           <input
             className="auth-form-input"
@@ -96,7 +122,7 @@ function RegisterForm() {
             placeholder="Email"
             required
             minLength={3}
-            onChange={(e) => setInPutMail(e.target.value)}
+            onChange={(e) => setInputMail(e.target.value)}
           />
 
           <div className="relative w-full">
@@ -134,8 +160,11 @@ function RegisterForm() {
 
           <div>
             {isError &&
-              errorMessages.map((message) => (
-                <p className=" top-full italic text-main-red text-[14px]">
+              errorMessages.map((message, i) => (
+                <p
+                  key={i}
+                  className=" top-full italic text-main-red text-[14px]"
+                >
                   {message}
                 </p>
               ))}
@@ -143,7 +172,7 @@ function RegisterForm() {
         </div>
         <div className="flex flex-col gap-[24px]">
           <Button type="submit">
-            {isPending ? "Logging in..." : "Log in"}
+            {isPending ? "Registering..." : "Register"}
           </Button>
           <aside className="flex justify-center gap-[8px]">
             <p className="text-dark-blue cursor-default font-normal">

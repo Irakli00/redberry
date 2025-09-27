@@ -1,20 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+
+import { logIn } from "../../services/auth";
+
+import { AppContext } from "../../context/AppContext";
+
+import Button from "../components/Button";
 
 import EyeIcon from "../../assets/icons/eye.svg";
-import { logIn } from "../../services/auth";
-import { AppContext } from "../../context/AppContext";
-import Button from "../components/Button";
 
 function LogInForm() {
   const { loginUser } = useContext(AppContext);
 
   const navigate = useNavigate();
 
-  const [inputMail, setInPutMail] = useState("");
+  const [inputMail, setInputMail] = useState("");
   const [inputPassword, setInputPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("Something went wrong!");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const { mutate, isPending, isError } = useMutation({
@@ -28,6 +31,8 @@ function LogInForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    setErrorMessage("");
     mutate({ email: inputMail, password: inputPassword });
   }
 
@@ -42,7 +47,7 @@ function LogInForm() {
             placeholder="Email"
             required
             minLength={3}
-            onChange={(e) => setInPutMail(e.target.value)}
+            onChange={(e) => setInputMail(e.target.value)}
           />
           <div className="relative w-full">
             <input

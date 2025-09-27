@@ -59,7 +59,7 @@ function Checkout() {
             <div className="max-w-[578px] flex flex-col gap-[33px]">
               <div className="flex gap-[24px]">
                 <input
-                  className="bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px]"
+                  className="checkout-input"
                   type="text"
                   placeholder="Name"
                   name="firstname"
@@ -67,7 +67,7 @@ function Checkout() {
                   required
                 />
                 <input
-                  className="bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px]"
+                  className="checkout-input"
                   type="text"
                   placeholder="Surname"
                   name="surname"
@@ -75,13 +75,13 @@ function Checkout() {
                   required
                 />
               </div>
-              <div className="flex items-center bg-white border border-[#E1DFE1] rounded-[8px]">
+              <div className="flex items-center checkout-input p-0">
                 <img
                   src={EnvelopeIcon}
                   className="ml-[12px] w-[16px] h-[16px] pointer-events-none"
                 />
                 <input
-                  className="flex-1 py-[10.5px] px-[12px] text-[14px] text-dark-blue "
+                  className="flex-1 checkout-input border-0"
                   placeholder="Email"
                   type="email"
                   name="email"
@@ -91,7 +91,7 @@ function Checkout() {
               </div>
               <div className="flex gap-[24px]">
                 <input
-                  className="bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px]"
+                  className="checkout-input"
                   type="text"
                   placeholder="Address"
                   name="address"
@@ -99,7 +99,7 @@ function Checkout() {
                   required
                 />
                 <input
-                  className="bg-white w-full py-[10.5px] px-[12px] text-[14px] text-dark-blue border border-[#E1DFE1] rounded-[8px]"
+                  className="checkout-input"
                   type="text"
                   placeholder="Zip code"
                   name="zipCode"
@@ -116,7 +116,6 @@ function Checkout() {
           ) : (
             <>
               <Cart></Cart>
-
               <Button
                 className="font-medium mt-[20px]"
                 onClick={handlePayClick}
