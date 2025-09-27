@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useParams } from "react-router";
 import { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { AppContext } from "../context/AppContext";
 
@@ -10,38 +10,19 @@ import { addToCart } from "../services/cart";
 import SoldOutBanner from "../elements/components/SoldOutBanner";
 import Button from "../elements/components/Button";
 import Spinner from "../elements/components/Spinner";
+import ProductGallery from "../elements/products/ProductGallery";
+import ProductColorSelect from "../elements/products/ProductColorSelect";
+import ProductQuantitySelect from "../elements/products/ProductQuantitySelect";
 
 import SuccessIcon from "../assets/icons/success.svg";
+import ProductDescription from "../elements/products/ProductDescription";
+import ProductSizeSelect from "../elements/products/ProductSizeSelect";
 
 function ProductDetails() {
   const { user, isAuthorised } = useContext(AppContext);
-  const colorMap = {
-    White: "#FFFFFF",
-    Red: "#FF0000",
-    Multi: "linear-gradient(45deg, #ff0000, #ffff00, #00ff00, #0000ff)",
-    Blue: "#0000FF",
-    "Navy Blue": "#001F54",
-    Grey: "#808080",
-    Black: "#000000",
-    Purple: "#800080",
-    Orange: "#FFA500",
-    Beige: "#F5F5DC",
-    Pink: "#FFC0CB",
-    Green: "#008000",
-    Cream: "#FFFDD0",
-    Maroon: "#800000",
-    Brown: "#A52A2A",
-    Peach: "#FFE5B4",
-    "Off White": "#F8F8F0",
-    Mauve: "#E0B0FF",
-    Yellow: "#FFFF00",
-    Magenta: "#FF00FF",
-    Khaki: "#F0E68C",
-    Olive: "#808000",
-  };
+  const { id: productId } = useParams();
 
   const qClient = useQueryClient();
-  const { id: productId } = useParams();
 
   const { data, isLoading: productLoading } = useQuery({
     queryKey: ["product", productId],
@@ -103,31 +84,16 @@ function ProductDetails() {
 
       <section className="flex gap-11 mt-[50px] ">
         <div className="flex gap-[24px]">
-          <div className="flex gap-[9px] flex-col">
-            {data.images.map((img, i) => (
-              <img
-                key={i}
-                className="max-w-[121px] cursor-pointer rounded-[6px] border-1 border-light-gray"
-                style={{
-                  borderColor: img === mainPhoto && "rgba(255, 64, 0, 1)",
-                }}
-                src={img}
-                onClick={() => {
-                  setMainPhoto(img);
-                  setSelectedColor(data.available_colors[i]);
-                }}
-                alt={data.name}
-              ></img>
-            ))}
-          </div>
-
-          <div>
-            <img
-              className="max-w-[700px]"
-              src={mainPhoto ?? data.cover_image}
-              alt={data.name}
-            />
-          </div>
+          <ProductGallery
+            imgAlt={data.name}
+            mainPhoto={mainPhoto}
+            coverImage={data.cover_image}
+            images={data.images}
+            onImageClick={(img, i) => {
+              setMainPhoto(img);
+              setSelectedColor(data.available_colors[i]);
+            }}
+          ></ProductGallery>
         </div>
 
         <article className="flex flex-col gap-[56px] overflow-hidden w-full">
@@ -144,75 +110,32 @@ function ProductDetails() {
             <SoldOutBanner></SoldOutBanner>
           ) : (
             <form className="flex flex-col gap-[48px]" onSubmit={handleSubmit}>
-              <div>
-                <p className="mb-[16px]">Color: {selectedColor}</p>
-                <ul className="flex items-center gap-[23px] pl-[6px] ">
-                  {data.available_colors.map((color, i) => (
-                    <li
-                      key={color}
-                      style={{
-                        background: colorMap[color],
-                        outline:
-                          selectedColor === color && "1px solid lightgray",
-                        outlineOffset: selectedColor === color && "5px",
-                        outlineColor: selectedColor === color && "lightgray",
-                      }}
-                      className="h-[38px] w-[38px] rounded-full  border border-light-gray cursor-pointer"
-                      onClick={() => {
-                        setMainPhoto(data.images[i]);
-                        setSelectedColor(color);
-                      }}
-                    ></li>
-                  ))}
-                </ul>
-              </div>
-
-              {(selectedSize || data.size) && (
-                <div>
-                  <p className="mb-[16px]">Size: {selectedSize ?? data.size}</p>
-                  {data.available_sizes && (
-                    <ul className="flex gap-[8px] ">
-                      {data.available_sizes.map((size) => (
-                        <li
-                          className="border border-light-gray rounded-[10px] py-[9px] px-[25px] cursor-pointer"
-                          style={{
-                            backgroundColor:
-                              selectedSize === size && "rgba(248, 246, 247, 1)",
-                            border: selectedSize === size && "1px solid black",
-                          }}
-                          key={size}
-                          onClick={() => setSelectedSize(size)}
-                        >
-                          {size}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+              {data.available_colors && (
+                <ProductColorSelect
+                  colors={data.available_colors}
+                  selectedColor={selectedColor}
+                  onColorSelect={(c, i) => {
+                    setSelectedColor(c);
+                    setMainPhoto(data.images[i]);
+                  }}
+                ></ProductColorSelect>
               )}
 
-              <div>
-                {!data.quantity && <p>SOLD OUT</p>}
-                {data.quantity && (
-                  <>
-                    <p className="mb-[16px]">Quantity:</p>
-                    <select
-                      className="border border-light-gray rounded-[10px] py-[9px] px-[16px]"
-                      name="quantity"
-                      id="quantity"
-                      onChange={(e) => setQuantity(+e.target.value)}
-                    >
-                      {Array.from({
-                        length: data.quantity <= 10 ? data.quantity : 10,
-                      }).map((_, i) => (
-                        <option key={i} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </div>
+              {(selectedSize || data.size) && (
+                <ProductSizeSelect
+                  selectedSize={selectedSize}
+                  availableSizes={data.available_sizes}
+                  defaultSize={data.size}
+                  onSizeChange={setSelectedSize}
+                />
+              )}
+
+              {data.quantity && (
+                <ProductQuantitySelect
+                  quantity={data.quantity}
+                  onQuantitySelect={(q) => setQuantity(q)}
+                ></ProductQuantitySelect>
+              )}
 
               <Button
                 disableCondition={!isAuthorised || !data.quantity}
@@ -242,7 +165,7 @@ function ProductDetails() {
                   </span>
                   {showMessage && (
                     <div className="absolute bg-main-red flex items-center gap-[5px]">
-                      <p>Added successfuly</p>
+                      <p>Added successfully</p>
                       <img
                         src={SuccessIcon}
                         alt="Success"
@@ -257,19 +180,13 @@ function ProductDetails() {
 
           <div className="h-[1px] bg-light-gray"></div>
 
-          <aside>
-            <div className="flex items-center justify-between max-h-[60px]">
-              <h3 className="text-[20px] font-medium">Details</h3>
-              <img
-                className="max-w-[80px]"
-                src={data.brand.image}
-                alt={data.brand.name}
-              />
-            </div>
-            <p className="mb-[20px]">Brand: {data.brand.name}</p>
-
-            <p>{data.description}</p>
-          </aside>
+          {(data.brand || data.description) && (
+            <ProductDescription
+              name={data.brand.name}
+              imgUrl={data.brand.image}
+              description={data.description}
+            ></ProductDescription>
+          )}
         </article>
       </section>
     </section>

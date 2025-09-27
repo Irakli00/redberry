@@ -8,7 +8,7 @@ import ItemCard from "../elements/products/ProductCard";
 import Spinner from "../elements/components/Spinner";
 import FilterTab from "../elements/components/FilterTab";
 
-import PriceFilter from "../elements/components/PriceFIlter";
+import PriceFilter from "../elements/components/PriceFilter";
 
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
