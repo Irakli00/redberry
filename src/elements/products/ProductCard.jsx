@@ -4,7 +4,7 @@ function ProductCard({ item }) {
   return (
     <Link
       to={`/products/${item.id}`}
-      className="flex flex-col cursor-pointer max-h-[612px] max-w-[412px] shadow-md p-2 rounded-[8px]"
+      className="flex flex-col cursor-pointer  max-w-[412px] shadow-md p-2 rounded-[8px]"
     >
       <img
         className="mb-[12px] rounded-[10px]"

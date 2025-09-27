@@ -1,32 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
-import { useState } from "react";
-import ReactPaginate from "react-paginate";
+import { useEffect, useState } from "react";
 
 import { getProducts } from "../services/products";
 
 import ItemCard from "../elements/products/ProductCard";
-import Button from "../elements/components/Button";
 import Spinner from "../elements/components/Spinner";
 import FilterTab from "../elements/components/FilterTab";
 
-import IconLeft from "../assets/icons/chevron-left.svg";
-import IconRight from "../assets/icons/chevron-right.svg";
+import PriceFilter from "../elements/components/PriceFIlter";
+
 import IconDown from "../assets/icons/chevron-down.svg";
 import FilterIcon from "../assets/icons/filter-icon.svg";
-import SortOption from "../elements/components/SortOption";
+import SortFilter from "../elements/components/Sortfilter";
+import Pagination from "../elements/components/Pagination";
+import NoProductsFound from "../elements/components/NoProductsFound";
 
 function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = +searchParams.get("page") || 1;
-  const priceFrom = searchParams.get("priceFrom") || null;
-  const priceTo = searchParams.get("priceTo") || null;
-  const sort = searchParams.get("sort") || null;
+
+  const [priceFrom, setPriceFrom] = useState(null);
+  const [priceTo, setPriceTo] = useState(null);
+  const [sort, setSort] = useState(null);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
 
   const activeFilters = [];
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("page");
+    params.delete("priceFrom");
+    params.delete("priceTo");
+    params.delete("sort");
+    setSearchParams(params);
+  }, []); //for reload reset
 
   if (priceFrom || priceTo) {
     activeFilters.push({
@@ -36,6 +46,9 @@ function Products() {
         newParams.delete("priceFrom");
         newParams.delete("priceTo");
         setSearchParams(newParams);
+
+        setPriceFrom(null);
+        setPriceTo(null);
       },
     });
   }
@@ -52,6 +65,8 @@ function Products() {
         const newParams = new URLSearchParams(searchParams);
         newParams.delete("sort");
         setSearchParams(newParams);
+
+        setSort(null);
       },
     });
   }
@@ -91,57 +106,13 @@ function Products() {
               <span>Filter</span>
             </button>
             {filterOpen && (
-              <div className="flex flex-col bg-white rounded-[8px] border border-light-gray absolute right-0 top-[120%] max-w-[392px] p-[16px]">
-                <h4 className="text-start font-semibold text-[16px] mb-[20px]">
-                  Select price
-                </h4>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    const data = Object.fromEntries(formData.entries());
-
-                    const newParams = new URLSearchParams(searchParams);
-                    if (data.priceFrom) {
-                      newParams.set("priceFrom", data.priceFrom);
-                    }
-                    if (data.priceTo) {
-                      newParams.set("priceTo", data.priceTo);
-                    }
-
-                    setSearchParams(newParams);
-                    setFilterOpen(false);
-                  }}
-                  className="flex flex-col gap-[10px]"
-                >
-                  <div className="flex gap-[10px]">
-                    <input
-                      className="border w-full min-w-[175px] border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                      type="number"
-                      name="priceFrom"
-                      id="priceFrom"
-                      placeholder="From"
-                      defaultValue={priceFrom || ""}
-                      required
-                    />
-                    <input
-                      className="min-w-[175px] w-full border border-light-gray rounded-[8px] py-[10px] px-[12px]"
-                      type="number"
-                      name="priceTo"
-                      id="priceTo"
-                      placeholder="To"
-                      defaultValue={priceTo || ""}
-                      required
-                    />
-                  </div>
-                  <Button
-                    className="self-end py-[10px] px-[42px]"
-                    type="submit"
-                  >
-                    Apply
-                  </Button>
-                </form>
-              </div>
+              <PriceFilter
+                onFilterAply={(priceFrom, priceTo) => {
+                  setFilterOpen(false);
+                  setPriceFrom(priceFrom);
+                  setPriceTo(priceTo);
+                }}
+              ></PriceFilter>
             )}
           </div>
           <div className="relative">
@@ -157,50 +128,18 @@ function Products() {
             </button>
 
             {sortOpen && (
-              <div className="flex flex-col bg-white rounded-[8px] border border-light-gray absolute right-0 top-[120%] w-[223px] overflow-hidden">
-                <h4 className="text-start font-semibold text-[16px] p-[16px]">
-                  Sort by
-                </h4>
-
-                <ul className="flex flex-col ">
-                  <SortOption
-                    onClick={() => {
-                      setSortOpen(false);
-                      const newParams = new URLSearchParams(searchParams);
-                      newParams.set("sort", "-created_at");
-                      setSearchParams(newParams);
-                    }}
-                  >
-                    New products first
-                  </SortOption>
-                  <SortOption
-                    onClick={() => {
-                      setSortOpen(false);
-                      const newParams = new URLSearchParams(searchParams);
-                      newParams.set("sort", "price");
-                      setSearchParams(newParams);
-                    }}
-                  >
-                    Price, low to high
-                  </SortOption>
-                  <SortOption
-                    onClick={() => {
-                      setSortOpen(false);
-                      const newParams = new URLSearchParams(searchParams);
-                      newParams.set("sort", "-price");
-                      setSearchParams(newParams);
-                    }}
-                  >
-                    Price,high to low
-                  </SortOption>
-                </ul>
-              </div>
+              <SortFilter
+                onFilterApply={(sort) => {
+                  setSortOpen(false);
+                  setSort(sort);
+                }}
+              ></SortFilter>
             )}
           </div>
         </div>
       </div>
 
-      {(sort || priceFrom || priceTo) && (
+      {!!activeFilters.length && (
         <div className="flex gap-[20px] mt-[20px] mb-[26px]">
           {activeFilters.map((f, i) => (
             <FilterTab
@@ -213,56 +152,13 @@ function Products() {
       )}
 
       <section className="grid grid-cols-4 gap-x-[24px] gap-y-[48px]">
-        {!products.length && (
-          <article className="text-main-red  text-center col-span-4">
-            <h1 className="text-[62px] font-bold">No items found</h1>
-            <p className="text-[22px] ">Try other filters</p>
-          </article>
-        )}
+        {!products.length && <NoProductsFound></NoProductsFound>}
         {isSuccess &&
           products.map((el) => <ItemCard key={el.id} item={el}></ItemCard>)}
       </section>
 
       {lastPage > 1 && (
-        <aside className="flex justify-center mt-[90px] mb-[200px]">
-          <ReactPaginate
-            previousLabel={
-              page > 1 && (
-                <img
-                  className="cursor-pointer"
-                  src={IconLeft}
-                  alt="previous page"
-                  onClick={() => setSearchParams({ page: page + 1 })}
-                ></img>
-              )
-            }
-            nextLabel={
-              page < lastPage && (
-                <img
-                  className="cursor-pointer"
-                  src={IconRight}
-                  alt="next page"
-                  onClick={() => setSearchParams({ page: page - 1 })}
-                ></img>
-              )
-            }
-            breakLabel={
-              <span className="flex items-center justify-center w-[32px] h-[32px] border border-light-gray text-dark-gray rounded-[4px]">
-                ...
-              </span>
-            }
-            forcePage={page - 1}
-            breakLinkClassName="pointer-events-none cursor-default"
-            pageCount={lastPage}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={2}
-            onPageChange={(e) => setSearchParams({ page: e.selected + 1 })}
-            containerClassName="flex items-center gap-[8px]"
-            pageClassName="border border-light-gray text-dark-gray/60 rounded-[4px]"
-            pageLinkClassName="w-[32px] h-[32px] cursor-pointer flex items-center justify-center"
-            activeClassName="border border-main-red text-main-red"
-          />
-        </aside>
+        <Pagination page={page} lastPage={lastPage}></Pagination>
       )}
     </section>
   );

@@ -1,19 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
+
+import { AppProvider } from "./context/AppContext.jsx";
 
 import AppLayout from "./layout/AppLayout";
 import Auth from "./pages/Auth";
-import LogInForm from "./elements/auth/LogInForm";
-import RegisterForm from "./elements/auth/RegisterForm";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
-import { AppProvider } from "./context/AppContext.jsx";
-import Checkout from "./pages/Checkout.jsx";
+import Checkout from "./pages/Checkout";
 
-// notes:
-// X on successful purchase leads to items list page
-// logout not neccessary
+import LogInForm from "./elements/auth/LogInForm";
+import RegisterForm from "./elements/auth/RegisterForm";
 
 const queryClient = new QueryClient({
   defaultOptions: {

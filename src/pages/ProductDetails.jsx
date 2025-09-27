@@ -112,7 +112,10 @@ function ProductDetails() {
                   borderColor: img === mainPhoto && "rgba(255, 64, 0, 1)",
                 }}
                 src={img}
-                onClick={() => setMainPhoto(img)}
+                onClick={() => {
+                  setMainPhoto(img);
+                  setSelectedColor(data.available_colors[i]);
+                }}
                 alt={data.name}
               ></img>
             ))}
@@ -144,7 +147,7 @@ function ProductDetails() {
               <div>
                 <p className="mb-[16px]">Color: {selectedColor}</p>
                 <ul className="flex items-center gap-[23px] pl-[6px] ">
-                  {data.available_colors.map((color) => (
+                  {data.available_colors.map((color, i) => (
                     <li
                       key={color}
                       style={{
@@ -155,7 +158,10 @@ function ProductDetails() {
                         outlineColor: selectedColor === color && "lightgray",
                       }}
                       className="h-[38px] w-[38px] rounded-full  border border-light-gray cursor-pointer"
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => {
+                        setMainPhoto(data.images[i]);
+                        setSelectedColor(color);
+                      }}
                     ></li>
                   ))}
                 </ul>
@@ -211,7 +217,6 @@ function ProductDetails() {
               <Button
                 disableCondition={!isAuthorised || !data.quantity}
                 type="submit"
-                className=""
               >
                 <>
                   <svg
